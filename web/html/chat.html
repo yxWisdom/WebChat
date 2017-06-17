@@ -12,7 +12,8 @@
     <div class="jumbotron" style="height: 100%; background: transparent; margin-bottom: 0;">
         <div class="row" style="height: 100%;">
             <!-- left begin -->
-            <div class="col-lg-4" style="height: 100%; background: #333333; border-radius: 4px 0 0 4px; color: #ffffff;">
+            <div class="col-lg-4"
+                 style="height: 100%; background: #333333; border-radius: 4px 0 0 4px; color: #ffffff;">
                 <div class="row" style="padding-top: 20px; padding-bottom: 20px">
                     <div class="col-lg-4">
                         <img src="../photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
@@ -21,10 +22,28 @@
                         <p style="padding-top: 20px; padding-bottom: 20px; margin-left: -20px;">DYW</p>
                     </div>
                     <div class="col-lg-2">
-                        <span class="glyphicon glyphicon-search" style="padding-top: 20px; padding-bottom: 20px; margin-left: 20px; font-size: x-large;"></span>
+                        <span class="glyphicon glyphicon-search"
+                              style="padding-top: 20px; padding-bottom: 20px; margin-left: 10px; font-size: x-large;"></span>
                     </div>
-                    <div class="col-lg-1">
-                        <span class="glyphicon glyphicon-th" style="padding-top: 20px; padding-bottom: 20px; font-size: x-large;"></span>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" id="settings_btn" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-th" style="padding-top: 20px; padding-bottom: 20px; font-size: x-large;"></span>
+                        </div>
+                        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="settings_btn">
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">个人信息</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">账户安全</a>
+                            </li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">分组设置</a>
+                            </li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">退出</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="row" style="text-align: center; font-size: x-large;">
