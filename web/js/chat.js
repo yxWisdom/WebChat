@@ -6,21 +6,30 @@ var currentUserId;
 
 $(function () {
     $("[data-toggle='popover']").popover();
-    $.getJSON("FriendServlet",{uid:currentUserId},function (friends) {
-        friendList=friends;
-    })
+    $.getJSON("FriendServlet", {uid: currentUserId}, function (friends) {
+        for (var friend in friends) {
+            var friendInfo;
+            friendInfo["nickname"] = friend["nickname"];
+            friendInfo["gender"] = friend["gender"];
+            friendInfo["birthday"] = friend["birthday"];
+            friendInfo["photo"] = friend["photo"];
+            friendList[friend["id"]] = friendInfo;
+        }
+    });
+    loadRecentMessages(currentUserId);
 });
 
 function loadRecentMessages(userId) {
     $.getJSON("MessageServlet", {uid: userId}, function (messageList) {
-        var messageDiv=$("#messageList");
+        var messageDiv = $("#messageList");
         messageDiv.clear();
         for (var message in messageList) {
-            var friendId=message["sender"]==currentUserId?message["receiver"]:message["sender"];
+            var friendId = message["sender"] == currentUserId ? message["receiver"] : message["sender"];
             messageDiv.append("<li class='list-group-item'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-3'>" +
-                "<img src='"+friendList["uid"]+"' ")
+                "<img src='" + friendList[friendId]["photo"] + "' class='img-circle' style='height: 30px; width: 30px;'></div>" +
+                "<div class='col-xs-6'>"+friendList[friendId]["nickname"]+"<br>"+)
         }
     })
 }
