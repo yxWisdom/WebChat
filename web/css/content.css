@@ -1,0 +1,136 @@
+.ChatBox {
+
+    height: 99%;
+    width: 99%;
+
+    margin: 1em auto 1em auto;
+    padding: 35px 0.5em 0.5em 0.5em;
+    clear: both;
+    float: none;
+    overflow: auto;
+
+    /*-webkit-box-shadow: rgba(125, 125, 125, 0.0980392) 0px 0px 3px 3px inset;*/
+    /*box-shadow: rgba(125, 125, 125, 0.0980392) 0px 0px 3px 3px inset;*/
+
+
+}
+
+.InputBox {
+    height: auto;
+    width: 95%;
+
+    margin: 1em auto 1em auto;
+    clear: both;
+    float: none;
+}
+
+.ChatInput {
+    height: 4.8em;
+    width: 100%;
+
+    padding: 0.25em 0.75em;
+
+    text-align: left;
+    line-height: 1.2em;
+    font-size: 1em;
+}
+
+.InputBtnBox {
+    min-width: 23em;
+    max-width: 22.5%;
+    float: right;
+    height: auto;
+
+    margin-top: 1em;
+    text-align: right;
+}
+
+.InputBtnBox .InputBtn{
+    min-width: 5em;
+    max-width: 10%;
+    width: auto;
+    height: 1.5em;
+
+    float: none;
+    display: inline-block;
+    margin-left: 2.5%;
+}
+.ChatContent{
+    position: relative;
+    float: left;
+    width: 61.4%;
+
+    opacity: 0;
+
+    padding-left: 2%;
+    margin-bottom: 0.75em;
+}
+
+.ChatContent .triangle{
+    width: 0;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+
+    margin-top: 5px;
+    float: left;
+    display: inline;
+
+    border-bottom: 8px solid #eeeeee;
+    border-top: 8px solid #eee;
+    border-left: none;
+    border-right: 8px solid rgb(77, 144, 254);
+}
+
+.right{
+    float: right;
+    padding-left: 0;
+    padding-right: 2%;
+}
+.right .triangle{
+    float: right;
+    diplay: inline;
+
+    border-right: none;
+    border-left: 8px solid rgb(77, 144, 254);
+}
+
+.ChatContent .contentbox{
+    display: inline;
+    float: left;
+    max-width: 85%;
+
+    padding: 5px 10px;
+
+    word-wrap: break-word;
+    word-break: normal;
+
+    border-radius: 5px;
+
+    background-color: rgb(77, 144, 254);
+
+    line-height: 1.25em;
+}
+
+.right .contentbox{
+    float: right;
+}
+
+
+.ChatContent > img{
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin-right: .3em;
+}
+
+.ChatContent.right > img{
+    float: right;
+    width: 32px;
+    height: 32px;
+    margin-left: .3em;
+}
+
+.content{
+    margin-bottom: 0  ;
+}

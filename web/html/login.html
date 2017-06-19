@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Title</title>
+
+</head>
+<body>
+
+
+<div class="top-content">
+
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-3 text">
+                    <h1><strong>Welcome to WebChat</strong></h1>
+                    <div class="description">
+                        <p>
+                            This is a simple Instant messaging website
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 form-box">
+                    <div class="form-top">
+                        <div class="form-top-left">
+                            <h3>Login to our site</h3>
+                            <!--<p>Enter your username and password to log on:</p>-->
+                        </div>
+                        <!--<div class="form-top-right">-->
+                            <!--<i class="fa fa-key"></i>-->
+                        <!--</div>-->
+                    </div>
+                    <div class="form-bottom">
+                        <form role="form" action="" method="post" class="login-form">
+                            <div class="form-group">
+                                <div class="input-group">
+                                <span class="input-group-addon "><span class="glyphicon glyphicon-user"></span></span>
+                                <label class="sr-only" for="accountid">Username</label>
+                                <input type="text" name="accountid" placeholder="Username..." class="form-username form-control" id="accountid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon "><span class="glyphicon glyphicon-lock"></span></span>
+                                <label class="sr-only" for="password">Password</label>
+                                <input type="password" name="password" placeholder="Password..." class="form-password form-control" id="password">
+                                </div>
+                            </div>
+                            <div class="form-group" style="line-height:20px">
+                                <div class="alert alert-danger" hidden="hidden" id="alterinfo"></div>
+                            </div>
+                            <button type="button" class="btn" id="login" name="login">Log in!</button>
+                            <div class="form-group" style="text-align:right">
+                                <a href="../html/sighup.html" >Sign up</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-3.1.0.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../js/jquery.backstretch.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../js/login.js"></script>
+</body>
+</html>

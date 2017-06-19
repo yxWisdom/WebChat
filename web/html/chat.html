@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/content.css">
+    <!--<link rel="stylesheet" href="../css/boilerplate.css">-->
     <script src="../js/jquery-3.1.0.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/chat.js"></script>
+    <script src="../js/ChatContent.js"></script>
 </head>
 <body style="height: 100%; background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#b8c4cb), to(#d9d9db));">
 <div class="container" style="height: 100%;">
@@ -17,7 +20,7 @@
                  style="height: 100%; background: #333333; border-radius: 5px 0 0 5px; color: #ffffff;">
                 <div class="row" style="padding-top: 20px; padding-bottom: 20px">
                     <div id="photo" class="col-xs-4">
-                        <img src="../photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
+                        <img src="../img/photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
                     </div>
                     <div id="nickname" class="col-xs-4">
                         <p style="padding-top: 20px; margin-left: -20px;">DYW</p>
@@ -99,7 +102,11 @@
                         </td>
                     </tr>
                     <tr style="height: 60%; border-bottom: 1px solid #cccccc;">
-                        <td></td>
+                        <td>
+                            <div id="ChatBox" class="ChatBox clearfix" >
+                                <div id="ChatContentBox"></div><!--在此插入聊天内容-->
+                            </div>
+                        </td>
                     </tr>
                     <tr style="height: 25%;">
                         <td>
@@ -109,15 +116,15 @@
                     </tr>
                     <tr>
                         <td>
-                            <button class="btn btn-primary pull-right">发送</button>
+                            <button id="sendmsg"class="btn btn-primary pull-right">发送</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: #eeeeee; border-radius: 0 5px 5px 0;">
+                <!--<div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: #eeeeee; border-radius: 0 5px 5px 0;">
                     <p style="padding-top: 300px; text-align: center; color: #cccccc; font-size: xx-large; font-weight: lighter;">
                         Welcome</p>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
