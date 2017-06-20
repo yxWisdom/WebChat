@@ -12,7 +12,7 @@ $(function () {
 
 // MessageList
 // friendId, friendNickname, friendPhoto, lastTime, lastMessage, messageNumber
-function loadRecentMessageList(userId) {
+function loadRecentMessageList() {
     /*$.getJSON("MessageListServlet", {uid: userId}, function (messageList) {
      var messageDiv = $("#messageList");
      messageDiv.clear();
@@ -74,8 +74,8 @@ function loadRecentMessageList(userId) {
 // FriendList
 // id, nickname, photo, groupName
 // TODO
-function loadFriendList(userId) {
-    $.getJSON("FriendListServlet", {uid: userId}, function (friendList) {
+function loadFriendList() {
+    $.getJSON("FriendListServlet", {uid: currentUserId}, function (friendList) {
         var messageDiv = $("#messageList");
         messageDiv.clear();
         for (var friend in friendList) {
@@ -115,7 +115,7 @@ function loadFriendList(userId) {
     var strToAppend = "";
     var groupCount = 0;
     for (var group in tempFriends) {
-        strToAppend += "<div id='group'" + groupCount + " class='panel-group' style='margin: 0;'>" +
+        strToAppend += "<div id='group" + groupCount + "' class='panel-group' style='margin: 0;'>" +
             "<div class='panel panel-default' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
             "<div class='panel-heading' style='background: transparent; color: white; border: none'>" +
             "<label data-toggle='collapse' data-parent='#group" + groupCount + "' href='#collapse" + groupCount + "'>" + group + "(" + tempFriends[group].length + ")</label>" +
@@ -125,7 +125,7 @@ function loadFriendList(userId) {
             "<ul class='list-group' style='margin: 0'>";
         for (var i = 0; i < tempFriends[group].length; ++i) {
             var friend = tempFriends[group][i];
-            strToAppend += "<li class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+            strToAppend += "<li id='friend"+friend.id+"' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-3'>" +
                 "<img src='" + friend.photo + "' class='img-circle' style='height: 30px; width: 30px;'>" +
@@ -143,8 +143,8 @@ function loadFriendList(userId) {
 
 // FriendApply
 // id, nickname, photo
-function loadApplyList(userId) {
-    $.getJSON("ApplyListServlet", {uid: userId}, function (applyList) {
+function loadApplyList() {
+    $.getJSON("ApplyListServlet", {uid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
         messageDiv.clear();
         for (var apply in applyList) {
