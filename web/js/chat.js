@@ -12,7 +12,7 @@ $(function () {
 
 // MessageList
 // friendId, friendNickname, friendPhoto, lastTime, lastMessage, messageNumber
-function loadRecentMessageList(userId) {
+function loadRecentMessageList() {
     /*$.getJSON("MessageListServlet", {uid: userId}, function (messageList) {
      var messageDiv = $("#messageList");
      messageDiv.clear();
@@ -74,8 +74,8 @@ function loadRecentMessageList(userId) {
 // FriendList
 // id, nickname, photo, groupName
 // TODO
-function loadFriendList(userId) {
-    $.getJSON("FriendListServlet", {uid: userId}, function (friendList) {
+function loadFriendList() {
+    $.getJSON("FriendListServlet", {uid: currentUserId}, function (friendList) {
         var messageDiv = $("#messageList");
         messageDiv.clear();
         for (var friend in friendList) {
@@ -143,8 +143,8 @@ function loadFriendList(userId) {
 
 // FriendApply
 // id, nickname, photo
-function loadApplyList(userId) {
-    $.getJSON("ApplyListServlet", {uid: userId}, function (applyList) {
+function loadApplyList() {
+    $.getJSON("ApplyListServlet", {uid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
         messageDiv.clear();
         for (var apply in applyList) {

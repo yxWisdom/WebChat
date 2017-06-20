@@ -47,20 +47,20 @@
                             </li>
                             <li role="presentation" class="divider"></li>
                             <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="#">退出</a>
+                                <a role="menuitem" tabindex="-1" href="login.html">退出</a>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="row" style="text-align: center; font-size: x-large;">
-                    <div id="messageIcon" class="col-xs-4">
+                    <div id="messageIcon" class="col-xs-4" onclick="loadRecentMessageList()">
                         <span class="glyphicon glyphicon-comment"></span>
                     </div>
                     <div id="contactIcon" class="col-xs-4"
-                         style="border-left: 1px solid #555555; border-right: 1px solid #555555;">
+                         style="border-left: 1px solid #555555; border-right: 1px solid #555555;" onclick="loadFriendList()">
                         <span class="glyphicon glyphicon-user"></span>
                     </div>
-                    <div id="appliesIcon" class="col-xs-4">
+                    <div id="appliesIcon" class="col-xs-4" onclick="loadApplyList()">
                         <span class="glyphicon glyphicon-bell"></span>
                     </div>
                 </div>
