@@ -25,20 +25,15 @@ public class AddFriendServlet extends HttpServlet {
         relation.setAccountid(request.getParameter("accountid"));
         relation.setFriendid(request.getParameter("friendid"));
         //*/
-        /*测试代码
-        relation.setAccountid("1027");
-        relation.setFriendid("1028");
-        */
+        ///*测试代码
+        //relation.setAccountid("1027");
+        //relation.setFriendid("1028");
+        //*/
         try
         {
             PrintWriter out = response.getWriter();
-
-            if(DataInteraction.insertRelations(relation)){
-                out.print("{\"addInfo\":\"1\"}");//申请已发送
-            }else{
-                out.print("{\"addInfo\":\"-1\"}");//申请失败请重新申请
-            }
-
+            //1:申请成功 -1:申请失败 -2:已发送申请，请耐心等待
+            out.print("{\"addInfo\":\""+DataInteraction.insertRelations(relation)+"\"}");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

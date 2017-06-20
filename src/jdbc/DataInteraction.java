@@ -183,11 +183,20 @@ public class DataInteraction {
         return true;
     }
 
-    public static boolean insertRelations(Relations relation) throws ClassNotFoundException, SQLException {
+    public static int insertRelations(Relations relation) throws ClassNotFoundException, SQLException {
 
         Class.forName("oracle.jdbc.OracleDriver");
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-
+        String checkString = "Select * From Relations Where ACCOUNTID ='"  + relation.getAccountid() +
+                "'and FRIENDID = '" + relation.getFriendid() + "'";
+        Statement stmt_check = con.createStatement();
+        ResultSet rs_check = stmt_check.executeQuery(checkString);
+        if (rs_check.next()) {
+            rs_check.close();
+            stmt_check.close();
+            con.close();
+            return -2;//已发送申请，请耐心等待
+        }
         Statement stmt = con.createStatement();
         String insertString = "Insert Into Relations(accountid,friendid) Values('"
                 + relation.getAccountid() + "','" + relation.getFriendid() + "')";
@@ -199,7 +208,7 @@ public class DataInteraction {
         int success2 = stmt.executeUpdate(insertString);
         stmt.close();
         con.close();
-        if(0 == success1 | 0 == success2) return false;
-        return true;
+        if(0 == success1 | 0 == success2) return -1;//申请失败
+        return 1;//申请成功
     }
 }
