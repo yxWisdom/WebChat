@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/content.css">
+    <!--<link rel="stylesheet" href="../css/boilerplate.css">-->
     <script src="../js/jquery-3.1.0.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/ChatContent.js"></script>
 </head>
 <body style="height: 100%; background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#b8c4cb), to(#d9d9db));">
 <div class="container" style="height: 100%;">
@@ -15,13 +19,13 @@
             <div class="col-xs-4"
                  style="height: 100%; background: #333333; border-radius: 5px 0 0 5px; color: #ffffff;">
                 <div class="row" style="padding-top: 20px; padding-bottom: 20px">
-                    <div class="col-xs-4">
-                        <img src="../photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
+                    <div id="photo" class="col-xs-4">
+                        <img src="../img/photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
                     </div>
-                    <div class="col-xs-4">
+                    <div id="nickname" class="col-xs-4">
                         <p style="padding-top: 20px; margin-left: -20px;">DYW</p>
                     </div>
-                    <div class="col-xs-2">
+                    <div id="search" class="col-xs-2" data-toggle="modal" data-target="#searchUser">
                         <span class="glyphicon glyphicon-search"
                               style="padding-top: 20px; padding-bottom: 20px; margin-left: 10px; font-size: x-large;"></span>
                     </div>
@@ -48,15 +52,19 @@
                     </div>
                 </div>
                 <div class="row" style="text-align: center; font-size: x-large;">
-                    <div class="col-xs-4">
+                    <div id="messageIcon" class="col-xs-4">
                         <span class="glyphicon glyphicon-comment"></span>
                     </div>
-                    <div class="col-xs-4" style="border-left: 1px solid #555555; border-right: 1px solid #555555;">
+                    <div id="contactIcon" class="col-xs-4"
+                         style="border-left: 1px solid #555555; border-right: 1px solid #555555;">
                         <span class="glyphicon glyphicon-user"></span>
                     </div>
-                    <div class="col-xs-4">
+                    <div id="appliesIcon" class="col-xs-4">
                         <span class="glyphicon glyphicon-bell"></span>
                     </div>
+                </div>
+                <div id="messages" style="overflow: hidden">
+                    <ul id="messageList" class="list-group"></ul>
                 </div>
             </div>
             <!-- left end -->
@@ -66,21 +74,17 @@
                     <tr style="height: 8%; border-bottom: 1px solid #cccccc;">
                         <td class="text-center">
                             <div class="col-xs-11">
-                                <label title="XXX" data-html="true" style="padding-top: 4%; font-size: larger; font-weight: normal;"
-                                        data-container="body" data-toggle="popover" data-placement="bottom"
-                                        data-content="账号：123<br>昵称：XXX<br>性别：男<br>生日：2000/01/01">
+                                <label title="XXX" data-html="true"
+                                       style="padding-top: 4%; font-size: larger; font-weight: normal;"
+                                       data-container="body" data-toggle="popover" data-placement="bottom"
+                                       data-content="账号：123<br>昵称：XXX<br>性别：男<br>生日：2000/01/01">
                                     XXX
                                 </label>
-                                <script>
-                                    $(function () {
-                                        $("[data-toggle='popover']").popover();
-                                    });
-                                </script>
                             </div>
                             <div class="dropdown pull-right">
                                 <div class="dropdown-toggle" id="friend_btn" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-chevron-down"
-                                  style="padding-top: 30px; margin-right: 20px; font-size: small;"></span>
+                                    <span class="glyphicon glyphicon-chevron-down"
+                                          style="padding-top: 30px; margin-right: 20px; font-size: small;"></span>
                                 </div>
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="friend_btn">
                                     <li role="presentation">
@@ -98,7 +102,11 @@
                         </td>
                     </tr>
                     <tr style="height: 60%; border-bottom: 1px solid #cccccc;">
-                        <td></td>
+                        <td>
+                            <div id="ChatBox" class="ChatBox clearfix" >
+                                <div id="ChatContentBox"></div><!--在此插入聊天内容-->
+                            </div>
+                        </td>
                     </tr>
                     <tr style="height: 25%;">
                         <td>
@@ -108,11 +116,57 @@
                     </tr>
                     <tr>
                         <td>
-                            <button class="btn btn-primary pull-right">发送</button>
+                            <button id="sendmsg"class="btn btn-primary pull-right">发送</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+                <!--<div style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: #eeeeee; border-radius: 0 5px 5px 0;">
+                    <p style="padding-top: 300px; text-align: center; color: #cccccc; font-size: xx-large; font-weight: lighter;">
+                        Welcome</p>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <div id="searchUser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="search user"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top: 200px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <div class="input-group">
+                        <span class="input-group-addon">搜索</span>
+                        <input id="searchContent" type="text" class="form-control" placeholder="请输入账号" onchange="searchUsers(this.id)">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <ul id="searchList" class="list-group">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="notice" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="search user"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top: 200px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
             </div>
         </div>
     </div>

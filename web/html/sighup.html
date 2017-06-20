@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Title</title>
+
+</head>
+<body>
+<!-- 背景图开始 -->
+
+<div class="top-content">
+
+    <div class="inner-bg">
+        <div class="container">
+
+            <div class="form-bottom" style="width:500px">
+                <h1><strong>Join WebChat Today</strong></h1>
+                <form role="form" action="" method="post" class="login-form">
+                    <div class="form-group">
+                        <input type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="form-checkpwd" placeholder="Check Password..." class="form-password form-control" id="form-checkpwd">
+                    </div>
+                    <div class="form-group"  >
+                        <select id="gender" name="gender" class="form-control" style="height:50px">
+                            <option value ="male">男</option>
+                            <option value ="saab">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group"  >
+                        <input type="date" name="form-date" placeholder="birthday" class="form-control" id="form-date" style="height:50px">
+                    </div>
+                    <div class="form-group" style="line-height:20px" >
+                        <div class="alert alert-danger" id="sighupinfo"></div>
+                    </div>
+                    <button type="button" class="btn" id="sighup" name="sighup">Sign up!</button>
+                        <div class="form-group" style="text-align:right">
+                            <a href="../html/login.html" >log in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--提示框-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 300px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">提示信息</h4>
+            </div>
+            <div class="modal-body" id="info" name="info"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</div>
+
+<script src="../js/jquery-3.1.0.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../js/jquery.backstretch.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../js/sighup.js"></script>
+</body>
+</html>
