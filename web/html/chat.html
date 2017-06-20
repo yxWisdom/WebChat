@@ -117,7 +117,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="sendmsg"class="btn btn-primary pull-right">发送</button>
+                            <button id="sendmsg" class="btn btn-primary pull-right">发送</button>
                         </td>
                     </tr>
                     </tbody>
@@ -138,8 +138,11 @@
                         &times;
                     </button>
                     <div class="input-group">
-                        <span class="input-group-addon">搜索</span>
-                        <input id="searchContent" type="text" class="form-control" placeholder="请输入账号" onchange="searchUsers(this.id)">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default">搜索</button>
+                            <button id="searchOption" value="id" onclick="changeSearchOption()" type="button" class="btn btn-default">账号▼</button>
+                        </div>
+                        <input id="searchContent" type="text" class="form-control" placeholder="请输入账号" onchange="searchUsers()">
                     </div>
                 </div>
                 <div class="modal-body">

@@ -125,7 +125,7 @@ function loadFriendList() {
             "<ul class='list-group' style='margin: 0'>";
         for (var i = 0; i < tempFriends[group].length; ++i) {
             var friend = tempFriends[group][i];
-            strToAppend += "<li id='friend"+friend.id+"' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+            strToAppend += "<li id='friend"+friend.id+"' onclick='chatToFriend(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-3'>" +
                 "<img src='" + friend.photo + "' class='img-circle' style='height: 30px; width: 30px;'>" +
@@ -165,9 +165,10 @@ function agree(applyUserId) {
 
 // Users
 // photo, nickname, id
-function searchUsers(searchContentId) {
-    var userId = document.getElementById(searchContentId).value;
-    $.getJSON("SearchUserServlet", {uid: userId}, function (userList) {
+function searchUsers() {
+    var searchOption=$("#searchOption").attr("value");
+    var searchContent=$("#searchContent").val();
+    $.getJSON("SearchUserServlet", {option: searchOption, content: searchContent}, function (userList) {
         var list = $("#searchList");
         list.clear();
         for (var user in userList) {
@@ -190,4 +191,21 @@ function addFriend(friendId) {
         noticeBox.append("请求已发送");
         $("#notice").modal();
     });
+}
+
+function changeSearchOption() {
+    var searchOption=$("#searchOption");
+    var searchContent=$("#searchContent");
+    if(searchOption.attr("value")=="id") {
+        searchOption.attr("value","nickname");
+        searchOption.text("昵称▼");
+        searchContent.attr("placeholder","请输入昵称");
+    } else {
+        searchOption.attr("value","id");
+        searchOption.text("账号▼");
+        searchContent.attr("placeholder","请输入账号");
+    }
+    if(searchContent.val()!="") {
+        searchUsers();
+    }
 }
