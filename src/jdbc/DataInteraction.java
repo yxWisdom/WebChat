@@ -390,59 +390,6 @@ public class DataInteraction {
             return 1;
     }
 
-    public static int DeleteGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement dostmt = conn.createStatement();
-        int rs_do = dostmt.executeUpdate("UPDATE RELATIONS SET GROUPID=0 WHERE GROUPID="+
-                group.getGroupid());
-        Statement stmt = conn.createStatement();//创建statement
-        int rs = stmt.executeUpdate("DELETE FROM GROUPS  WHERE GROUPID=" +
-                group.getGroupid());
-
-        stmt.close();
-        conn.close();
-        if( 0 == rs){
-            return -2;
-        }
-        else if( 0== rs_do)
-            return -1;
-        else
-            return 1;
-    }
-      
-    public static String ShowAllGroups(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement stmt = conn.createStatement();//创建statement
-        ResultSet rs = stmt.executeQuery("SELECT * FROM GROUPS " +
-                "WHERE ACCOUNTID=" +
-                group.getAccountid() + "Order by GROUPID");
-        String retString = DataInteraction.resultSetToJson(rs);
-
-        rs.close();
-        stmt.close();
-        conn.close();
-        return retString;
-    }
-
-    public static int EditGroupName(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement stmt = conn.createStatement();//创建statement
-        int rs = stmt.executeUpdate("UPDATE GROUPS SET NAME='" +
-                group.getName()+
-                "' WHERE GROUPID=" +
-                group.getGroupid());
-
-        stmt.close();
-        conn.close();
-        if( 0 == rs){
-            return -1;
-        }
-        else
-            return 1;
-    }//aln
     public static boolean deleteFriend(String accountid, String friendid) throws ClassNotFoundException, SQLException {
 
         String deleteString = "Delete from RELATIONS where (ACCOUNTID = '"+accountid+"' and FRIENDID = '"+friendid

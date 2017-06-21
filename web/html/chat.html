@@ -89,7 +89,7 @@
                                           style="padding-top: 30px; margin-right: 20px; font-size: small;"></span>
                                 </div>
                                 <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="friend_btn">
-                                    <li role="presentation">
+                                    <li role="presentation" data-toggle="modal" data-target="#groupSetting">
                                         <a role="menuitem" tabindex="-1" href="#">调整分组</a>
                                     </li>
                                     <li role="presentation">
@@ -168,6 +168,24 @@
                 </div>
                 <div class="modal-body">
 1
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="groupSetting" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="set group"
+         aria-hidden="true">
+        <div class="modal-dialog" style="margin-top: 200px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="groupList" class="list-group"></ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
