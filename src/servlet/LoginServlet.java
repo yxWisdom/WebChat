@@ -1,4 +1,4 @@
-package servlet;
+﻿package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,12 +26,7 @@ public class LoginServlet extends HttpServlet {
 
         try {
             PrintWriter out = response.getWriter();
-            //实际代码
-            //Account account = DataInteraction.login(accountid, password);
-            //实际代码
-            //测试代码
-            Account account = DataInteraction.login("1008", "5678");
-            //测试代码
+            Account account = DataInteraction.login(accountid, password);
             if(null == account.getAccountid()){
                 out.print("{\"logInfo\":\"-1\"}");//用户不存在
             }else if(null == account.getPassword()){
