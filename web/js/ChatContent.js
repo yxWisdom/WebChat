@@ -3,6 +3,7 @@
  */
 
 var chat_contents_height = 20;
+
 $(document).ready(function () {
     // $("#ChatContent").empty();
     // $("#ChatInput").val("");
@@ -10,9 +11,19 @@ $(document).ready(function () {
     // var int=self.setInterval("readMsg()",1000);
     //var Test=[{"a":"aaa","b":"231"},{"a":"haha","b":"231"}];
     //alert(Test.length);
-    chatTo("123");
-    if($("#sendmsg").size()>0)
-        alert(123);
+    //chatTo("123");
+    if(document.getElementById("sendmsg123"))
+        alert("123");
+   //alert($("#sendmsg"));
+   // alert($("#div_userinfo").find("label").attr("id"));
+   
+    array=[];
+    array.push("1");
+    array.push("2");
+    json={"name":array};
+    //if("1,2"===array.toString())
+    alert(json.name[0]);
+
     $("#sendmsg").click(function () {
         // var text=$("#message").val();
         // if(text) {
@@ -25,8 +36,8 @@ $(document).ready(function () {
 
 function refresh()
 {
-    var  c;
-    var csender =   $("#xxxx");
+    var  messageList;
+    var csender =  $("#div_userinfo").find("label").attr("id")
     $.ajax({
         type: "POST",
         url: ServerUrl,
@@ -36,30 +47,64 @@ function refresh()
             "id": id,
             "reviver":$.cookie("accountid")
         },
-        beforeSend : function() {
-        },
-        complete: function() {
-        },
         success: function(Data) {
-            c=Data;
+            messageList=Data;
         },
         error: function(e){
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
-   for(var i=0;i<c.length;i++)
+
+    haveread=[];
+
+   for(var message in messageList)
    {
-       if(c[i].sender == csender)
+       if(message.sender == csender)
        {
-           var textbox = new ChatContent.Text(data.text,"ai");
+           var textbox = new ChatContent.Text(data.text,"sender");
            showMsg(textbox);
+           haveread.push(message.messageid);
+       }else
+       {
+           var friend = document.getElementById("friend"+message.accountid);
+           if(friend)
+           {
+               var count=parseInt(friend.find("span").text())+1;
+               friend.find("span").text(count);
+           }else
+           {
+               messageDiv.append("<li id='message" + message.friendId + "' onclick='chatTo(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+                   "<div class='row'>" +
+                   "<div class='col-xs-2'>" +
+                   "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
+                   "<div class='col-xs-10'>" +
+                   "<div class='row'>" +
+                   "<div class='col-xs-10'>" + message.friendNickname +
+                   "<div class='col-xs-2 pull-right'>" + message.lastTime +
+                   "</div>" +
+                   "<div class='row' style='margin-left: 0'>" + lastMessage +
+                   "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
+                   "</span></div></div></div></li>");
+           }
+
        }
    }
+}
+
+function readMessage(recevier)
+{
+    
+}
+
+function readMsgHistory()
+{
 
 }
 
-function chatTo(id) {
-    id=id.substr("message".length);
+
+function chatToFriend(Sid)
+{
+    id = Sid.substr("friend".length);
     var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
     while(!data)
     {
@@ -73,6 +118,26 @@ function chatTo(id) {
     label.attr("title",data.nickname);
     label.attr("data-content",str);
     label.attr("id",data.accountid);
+}
+
+
+function chatTo(Sid) {
+    id=Sid.substr("message".length);
+    var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    while(!data)
+    {
+        data = readFriendInfo(id);
+    }
+    var str;
+    str = "账号："+data.accountid+"<br>"+"昵称："+data.nickname+"<br>"+"性别："+data.gender+"<br>"+"出生日期："+data.birthday;
+    var label = $("#div_userinfo").find("label");
+    label.text(data.nickname);
+    label.attr("data-original-title",data.nickname);
+    label.attr("title",data.nickname);
+    label.attr("data-content",str);
+    label.attr("id",data.accountid);
+    $("#"+Sid).remove();
+
 }
 function readFriendInfo(id) {
     var retData=null;
