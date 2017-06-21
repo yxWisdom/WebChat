@@ -35,10 +35,7 @@ public class ReadUserFriendsServlet extends HttpServlet {
 
         try{
             String userFriends = DataInteraction.readFriends(user);
-            if(userFriends == null)
-                out.print("{\"userFriends\":\"0\"}");
-            else
-                out.print(userFriends);
+            out.print(userFriends);
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

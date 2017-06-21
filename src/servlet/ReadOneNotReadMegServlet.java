@@ -1,5 +1,9 @@
 package servlet;
 
+import jdbc.DataInteraction;
+import my.Message;
+import org.json.JSONException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,16 +13,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-import my.*;
-import jdbc.DataInteraction;
-import org.json.JSONException;
-
 /**
- * Created by ALN on 2017/6/20.
+ * Created by ALN on 2017/6/21.
  */
-@WebServlet("/FindNotReadFriendsServlet")
-public class FindNotReadFriendsServlet extends HttpServlet {
-    Account user=new Account();
+@WebServlet("/ReadOneNotReadMegServlet")
+public class ReadOneNotReadMegServlet extends HttpServlet {
+    Message meg = new Message();
+    int ret=0;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -27,12 +28,14 @@ public class FindNotReadFriendsServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //user.setAccountid(request.getParameter("accountid"));
-        user.setAccountid("1000");
+        //meg.setSender(request.getParameter("sender"));
+        //meg.setReceiver(request.getParameter("receiver"));
+        meg.setSender("1020");
+        meg.setReceiver("1000");
 
         try{
-            String findUnreadFriends = DataInteraction.findUnreadFriends(user);
-            out.print(findUnreadFriends);
+            String FindUnreadTexts = DataInteraction.FindUnreadTexts(meg);
+            out.print(FindUnreadTexts);
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

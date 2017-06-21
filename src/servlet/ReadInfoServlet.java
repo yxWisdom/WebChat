@@ -28,19 +28,20 @@ public class ReadInfoServlet extends HttpServlet{
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        userInfo.setAccountid(request.getParameter("accountid"));
+        //userInfo.setAccountid(request.getParameter("accountid"));
+        userInfo.setAccountid("1000");
 
         try {
             userInfo = DataInteraction.readInfo(userInfo);
             if(userInfo.getAccountid() == null){
-                out.print("{\"accountid\":\"-1\"}");
+                out.print("[{\"accountid\":\"-1\"}]");
             }
             else {
-                out.print("{\"ACCOUNTID\":\""+ userInfo.getAccountid()+
+                out.print("[{\"ACCOUNTID\":\""+ userInfo.getAccountid()+
                         "\",\"NICKNAME\":\"" + userInfo.getNickname()+
                         "\",\"GENDER\":\"" + userInfo.getGender()+
                         "\",\"BIRTHDAY\":\"" + userInfo.getBirthday()+
-                        "\",\"PHOTO\":\"" + userInfo.getPhoto()+ "\"}");
+                        "\",\"PHOTO\":\"" + userInfo.getPhoto()+ "\"}]");
             }
 
         } catch (ClassNotFoundException e) {

@@ -32,10 +32,7 @@ public class ReadUserNewFriendServlet extends HttpServlet {
 
         try{
             String userNewFriends = DataInteraction.readNewFriends(user);
-            if(userNewFriends == "[]")
-                out.print("{\"userNewFriends\":\"0\"}");
-            else
-                out.print(userNewFriends);
+            out.print(userNewFriends);
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

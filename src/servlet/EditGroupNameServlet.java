@@ -1,5 +1,9 @@
 package servlet;
 
+import jdbc.DataInteraction;
+import my.Groups;
+import org.json.JSONException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,16 +13,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-import my.*;
-import jdbc.DataInteraction;
-import org.json.JSONException;
-
 /**
- * Created by ALN on 2017/6/20.
+ * Created by ALN on 2017/6/21.
  */
-@WebServlet("/FindNotReadFriendsServlet")
-public class FindNotReadFriendsServlet extends HttpServlet {
-    Account user=new Account();
+@WebServlet("/EditGroupNameServlet")
+public class EditGroupNameServlet extends HttpServlet {
+    Groups group = new Groups();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -27,17 +27,18 @@ public class FindNotReadFriendsServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //user.setAccountid(request.getParameter("accountid"));
-        user.setAccountid("1000");
+        //group.setGroupid(request.getParameter("groupid"));
+        //group.setName(request.getParameter("groupname"));
+        group.setGroupid("1");
+        group.setName("New_1");
 
         try{
-            String findUnreadFriends = DataInteraction.findUnreadFriends(user);
-            out.print(findUnreadFriends);
-        }catch (ClassNotFoundException e) {
+            out.print("[{\"EditGroupName\":\""+DataInteraction.EditGroupName(group)+"\"}]");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
