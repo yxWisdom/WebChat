@@ -5,7 +5,9 @@ var currentUserId;
 
 $(function () {
     $("[data-toggle='popover']").popover();
-    //currentUserId = $.cookie("accountid");
+    var messagesDiv=$("#messages");
+    messagesDiv.height(messagesDiv.parent().height()-144);
+    currentUserId = $.cookie("accountid");
     loadRecentMessageList(currentUserId);
     loadFriendList(currentUserId);
 });
@@ -180,7 +182,8 @@ function searchUsers() {
                 "<span id='friend" + user["id"] + "' class='glyphicon glyphicon-send' onclick='addFriend(this.id)'></span>" +
                 "</div></li>");
         }
-    })
+    });
+
 }
 
 function addFriend(friendId) {
