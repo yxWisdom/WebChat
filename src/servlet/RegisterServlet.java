@@ -32,16 +32,16 @@ public class RegisterServlet extends HttpServlet {
         System.out.println(gender);
         System.out.println(gender);
         ArrayList photo = new ArrayList();
-        photo.add("../img/randomphoto1.jpg");        //头像1
-        photo.add("../img/randomphoto2.jpg");        //头像2
-        photo.add("../img/randomphoto3.jpg");        //头像3
-        photo.add("../img/randomphoto4.jpg");        //头像4
-        photo.add("../img/randomphoto5.jpg");        //头像5
-        photo.add("../img/randomphoto6.jpg");        //头像6
-        photo.add("../img/randomphoto7.jpg");        //头像7
-        photo.add("../img/randomphoto8.jpg");        //头像8
-        photo.add("../img/randomphoto9.jpg");        //头像9
-        photo.add("../img/randomphoto10.jpg");        //头像10
+        photo.add("../img/randomphoto1.JPG");        //头像1
+        photo.add("../img/randomphoto2.JPG");        //头像2
+        photo.add("../img/randomphoto3.JPG");        //头像3
+        photo.add("../img/randomphoto4.JPG");        //头像4
+        photo.add("../img/randomphoto5.JPG");        //头像5
+        photo.add("../img/randomphoto6.JPG");        //头像6
+        photo.add("../img/randomphoto7.JPG");        //头像7
+        photo.add("../img/randomphoto8.JPG");        //头像8
+        photo.add("../img/randomphoto9.JPG");        //头像9
+        photo.add("../img/randomphoto10.JPG");        //头像10
         Random r = new Random();
         int i = r.nextInt(10);
         try {
