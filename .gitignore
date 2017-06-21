@@ -1,2 +1,5 @@
 .idea
 out
+web/WEB-INF/classes
+web/WEB-INF/lib
+lib

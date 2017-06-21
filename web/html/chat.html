@@ -9,6 +9,7 @@
     <script src="../js/jquery-3.1.0.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/jquery.backstretch.js"></script>
+    <script src="../js/jquery.cookie.js"></script>
     <script src="../js/chat.js"></script>
     <script src="../js/ChatContent.js"></script>
 </head>
@@ -64,7 +65,7 @@
                         <span class="glyphicon glyphicon-bell"></span>
                     </div>
                 </div>
-                <div id="messages" style="overflow: hidden">
+                <div id="messages" class="row" style="overflow-y: scroll; margin-right: -32px">
                     <ul id="messageList" class="list-group"></ul>
                 </div>
             </div>
@@ -140,7 +141,7 @@
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default">搜索</button>
-                            <button id="searchOption" value="id" onclick="changeSearchOption()" type="button" class="btn btn-default">账号▼</button>
+                            <button id="searchOption" value="findaccountid" onclick="changeSearchOption()" type="button" class="btn btn-default">账号▼</button>
                         </div>
                         <input id="searchContent" type="text" class="form-control" placeholder="请输入账号" onchange="searchUsers()">
                     </div>
@@ -166,7 +167,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-
+1
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
