@@ -1,7 +1,7 @@
 /**
  * Created by wisdom on 2017/6/19.
  */
-var ServerUrl=""
+var ServerUrl="../LoginServlet"
 
 $(document).ready(function () {
     $.backstretch("../img/backgrounds/12.jpg");
@@ -25,6 +25,7 @@ function login(){
             "password":$("#password").val()
         },
         beforeSend : function() {
+
           if(!$("#accountid").val() && !$("#password").val())
           {
               $("#alterinfo").text("账号密码不能为空！").show();
@@ -36,14 +37,18 @@ function login(){
 
         },
         success: function(data) {
-            if(data == "success")
+            if(data.logInfo == "-1")
             {
-                $.cookie('accountid',$("#accountid").val());
-                window.location.href="test.html";
+                $("#alterinfo").text("账号不存在！").show();
+            }else if(data.logInfo == "-2")
+            {
+                $("#alterinfo").text("账号或密码错误").show();
             }else
             {
-                $("#alterinfo").text(data).show();
+                $.cookie('accountid',data.logInfo);
+                window.location.href="chat.html";
             }
+            
         },
         error: function(e){
             alert(e.name + ": " + e.message + "\n链接失败");

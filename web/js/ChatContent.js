@@ -6,12 +6,175 @@ var chat_contents_height = 20;
 $(document).ready(function () {
     // $("#ChatContent").empty();
     // $("#ChatInput").val("");
+
+    // var int=self.setInterval("readMsg()",1000);
+    //var Test=[{"a":"aaa","b":"231"},{"a":"haha","b":"231"}];
+    //alert(Test.length);
+    chatTo("123");
+    if($("#sendmsg").size()>0)
+        alert(123);
     $("#sendmsg").click(function () {
-        var text=$("#message").val();
-        var textbox = new ChatContent.Text(text,"user");
-        showMsg(textbox);
+        // var text=$("#message").val();
+        // if(text) {
+        //     var textbox = new ChatContent.Text(text, "ai");
+        //     showMsg(textbox);
+        // }
+        sendMsg();
     })
 })
+
+function refresh()
+{
+    var  c;
+    var csender =   $("#xxxx");
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "id": id,
+            "reviver":$.cookie("accountid")
+        },
+        beforeSend : function() {
+        },
+        complete: function() {
+        },
+        success: function(Data) {
+            c=Data;
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+   for(var i=0;i<c.length;i++)
+   {
+       if(c[i].sender == csender)
+       {
+           var textbox = new ChatContent.Text(data.text,"ai");
+           showMsg(textbox);
+       }
+   }
+
+}
+
+function chatTo(id) {
+    id=id.substr("message".length);
+    var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    while(!data)
+    {
+        data = readFriendInfo(id);
+    }
+    var str;
+    str = "账号："+data.accountid+"<br>"+"昵称："+data.nickname+"<br>"+"性别："+data.gender+"<br>"+"出生日期："+data.birthday;
+    var label = $("#div_userinfo").find("label");
+    label.text(data.nickname);
+    label.attr("data-original-title",data.nickname);
+    label.attr("title",data.nickname);
+    label.attr("data-content",str);
+    label.attr("id",data.accountid);
+}
+function readFriendInfo(id) {
+    var retData=null;
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "id": id
+        },
+        beforeSend : function() {
+            if(!id)
+                return false;
+        },
+        complete: function() {
+        },
+        success: function(Data) {
+            retData = Data;
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+    return retData;
+}
+
+
+
+function readMsg() {
+    $.ajax({
+        type: "POST",
+        async: false,
+        url: ServerUrl,
+        dataType: "json",
+        data: {
+            "sender": $("#accountid").val(),
+            "receiver":$("#password").val(),
+            "text":  $("#message").val()
+        },
+        beforeSend : function() {
+            if(!data.text)
+            {
+                return false;
+            }
+        },
+        complete: function() {
+        },
+        success: function(Data) {
+            if(Data.info == "1")
+            {
+                var textbox = new ChatContent.Text(data.text,"user");
+                showMsg(textbox);
+                $("#message").text("");
+            }else
+            {
+                alert("消息发送失败！");
+            }
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+}
+
+
+function sendMsg()
+{
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "sender": $("#accountid").val(),
+            "receiver":$("#password").val(),
+            "text":  $("#message").val()
+        },
+        beforeSend : function() {
+            if(!data.text)
+            {
+                return false;
+            }
+        },
+        complete: function() {
+        },
+        success: function(Data) {
+            if(Data.info == "1")
+            {
+                var textbox = new ChatContent.Text(data.text,"user");
+                showMsg(textbox);
+                $("#message").text("");
+            }else
+            {
+               alert("消息发送失败！");
+            }
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+}
 
 function showMsg(textBox) {
     
@@ -24,8 +187,8 @@ function showMsg(textBox) {
 
 var ChatContent= {
     counter : -1,
-    BoxPrefixLeft : '<span class="triangle"></span><span class="contentbox"><p class="content">',
-    BoxPrefixRight : '<span class="triangle"></span><span class="contentbox"><p class="content">',
+    BoxPrefixLeft : '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
+    BoxPrefixRight : '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
     BoxSuffix : '</p></span></div>',
     BoxDivHeadLeft : '<div class="ChatContent clearfix" ',
     BoxDivHeadRight : '<div class="ChatContent clearfix right" ',

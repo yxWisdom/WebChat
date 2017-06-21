@@ -2,7 +2,7 @@
  * Created by wisdom on 2017/6/18.
  */
 
-var ServerUrl =""
+var ServerUrl ="../RegisterServlet"
 $(document).ready(function() {
     /*
      Fullscreen background
@@ -30,11 +30,13 @@ function sighup(){
         async: false,
         dataType: "json",
         data: {
-            "accountid": $("#accountid").val(),
-            "password":$("#password").val()
+            "nickname": $("#nickname").val(),
+            "password":$("#form-password").val(),
+            "gender":$("#gender").val(),
+            "birthday":$("#form-date").val()
         },
         beforeSend : function() {
-            if(!$("#form-username").val() || !$("#form-password").val() || !$("#form-checkpwd").val() || !$("#form-date").val())
+            if(!$("#nickname").val() || !$("#form-password").val() || !$("#form-checkpwd").val() || !$("#form-date").val())
             {
                 $("#sighupinfo").text("选项不能为空！").show();
                 return false;
@@ -50,9 +52,9 @@ function sighup(){
         success: function(data) {
             $("#sighupinfo").hide();
             $('#info').empty();
-            if(data)
+            if(data.accountid)
             {
-                $('#info').append("注册成功，账号为："+ data);
+                $('#info').append("注册成功，账号为："+ data.accountid);
                 $('#myModal').modal('show');
             }
         },
