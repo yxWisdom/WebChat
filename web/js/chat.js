@@ -211,16 +211,17 @@ function searchUsers() {
 
 function addFriend(friendId) {
     var userId = friendId.substr("friend".length);
-    $.getJSON("AddFriendServlet", {uid2: currentUserId, uid1: userId}, function () {
+    /*
+    $.getJSON("AddFriendServlet", {accountid: currentUserId, friendid: userId}, function () {
         var noticeBox = $("#notice.modal-body");
         noticeBox.empty();
         noticeBox.append("请求已发送");
         $("#notice").modal();
-    });
+    });*/
     $("#searchUser").modal("hide");
     var noticeBox = $("#notice.modal-body");
     noticeBox.empty();
-    alert(noticeBox.text());
+    alert(noticeBox.innerText);
     noticeBox.val("请求已发送");
     $("#notice").modal();
 }
@@ -240,4 +241,9 @@ function changeSearchOption() {
     if(searchContent.val()!="") {
         searchUsers();
     }
+}
+
+function changeGroup() {
+    var friendId=$("#div_userinfo").find("label");
+    alert(friendId);
 }
