@@ -57,7 +57,7 @@ public class DataInteraction {
     // sid_url:jdbc:oracle:thin:@192.168.56.1:1521:orclzoe
     // service_name_url:sid_urljdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1
 
-    public static final String DBURL = "jdbc:oracle:thin:@ALN-VAIO:1521:orcl";
+    public static final String DBURL = "jdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1";
     // 连接数据库的用户名
     public static final String DBUSER = "scott";
     // 连接数据库的密码
@@ -132,8 +132,19 @@ public class DataInteraction {
 
         Class.forName("oracle.jdbc.OracleDriver");
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        String selectString = "Select * From INFO Where accountid ='" + Integer.parseInt(findaccountid) +
-                "' OR nickname LIKE '%" + nickname + "%'";
+
+        String selectString = "";
+        if(findaccountid.equals("null"))
+        {selectString = "Select * From INFO Where  nickname LIKE '%" + nickname +
+                "%'and accountid != '" + accountid + "'";}
+        else if (nickname.equals("null") )
+        {selectString = "Select * From INFO Where accountid ='" +  findaccountid +
+                "'and accountid != '" + accountid + "'";}
+        else {
+            selectString = "Select * From INFO Where (accountid ='" + findaccountid +
+                    "' OR nickname LIKE '%" + nickname + "%') " +
+                    "and accountid != '" + accountid + "'";
+        }
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(selectString);
         // json数组
@@ -173,6 +184,7 @@ public class DataInteraction {
         con.close();
         return array.toString();
     }
+
     public static boolean update(String updateString) throws ClassNotFoundException, SQLException {
         Class.forName("oracle.jdbc.OracleDriver");
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
@@ -309,5 +321,78 @@ public class DataInteraction {
         stmt.close();
         conn.close();
         return ret;*/
+    }
+    //aln
+    public static boolean deleteFriend(String accountid, String friendid) throws ClassNotFoundException, SQLException {
+
+        String deleteString = "Delete from RELATIONS where (ACCOUNTID = '"+accountid+"' and FRIENDID = '"+friendid
+                +"') or (ACCOUNTID = '"+friendid+"' and FRIENDID = '"+accountid+"')";
+        return update(deleteString);//申请成功
+    }
+    public static String searchHistory(String accountid, String friendid)throws ClassNotFoundException ,SQLException ,JSONException{
+
+        Class.forName("oracle.jdbc.OracleDriver");
+        Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        String selectString = "Select * From MESSAGE where (sender = '"+accountid+"' and receiver = '"+friendid
+                +"'and (read = '1' or read = '3' ) ) or (sender = '"+friendid+"' and receiver = '"+accountid+"'and (read = '1' or read = '2'))";
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(selectString);
+        String jsonString = resultSetToJson(rs);
+        rs.close();
+        stmt.close();
+        con.close();
+        return jsonString;
+    }
+    public static String getAccountInfo(String accountid)throws ClassNotFoundException ,SQLException ,JSONException{
+
+        Class.forName("oracle.jdbc.OracleDriver");
+        Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        String selectString = "Select * From Info where (accountid = '"+accountid+"')";
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(selectString);
+        String jsonString = resultSetToJson(rs);
+        rs.close();
+        stmt.close();
+        con.close();
+        return jsonString;
+    }
+    public static boolean delete(String tableName, String key, String[] ids)
+            throws ClassNotFoundException, SQLException {
+        String deleteString = "Delete From " + tableName + " Where " + key + " in (";
+        for (int i = 0; i < ids.length; ++i) {
+            deleteString += "'" + ids[i] + "',";
+        }
+        deleteString = deleteString.substring(0, deleteString.length() - 1);
+        deleteString += ")";
+        return update(deleteString);
+    }
+    public static boolean deleteHistory(String accountid, String[] ids)
+            throws ClassNotFoundException, SQLException {
+
+        String deleteString = "Delete From message Where (read = '2' or read = '3' ) and messageid in (";
+        for (int i = 0; i < ids.length; ++i) {
+            deleteString += "'" + ids[i] + "',";
+        }
+        deleteString = deleteString.substring(0, deleteString.length() - 1);
+        deleteString += ")";
+        update(deleteString);
+
+        String updateString = "Update message Set read='2'  Where read = '1' and sender = '"+accountid
+                +"'and messageid in (";
+        for (int i = 0; i < ids.length; ++i) {
+            updateString += "'" + ids[i] + "',";
+        }
+        updateString = updateString.substring(0, updateString.length() - 1);
+        updateString += ")";
+        update(updateString);
+
+        updateString = "Update message Set read='3'  Where read = '1' and receiver = '"+accountid
+                +"'and messageid in (";
+        for (int i = 0; i < ids.length; ++i) {
+            updateString += "'" + ids[i] + "',";
+        }
+        updateString = updateString.substring(0, updateString.length() - 1);
+        updateString += ")";
+        return update(updateString);
     }
 }
