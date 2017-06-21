@@ -27,10 +27,10 @@ public class LoginServlet extends HttpServlet {
         try {
             PrintWriter out = response.getWriter();
             //实际代码
-            //Account account = DataInteraction.login(accountid, password);
+            Account account = DataInteraction.login(accountid, password);
             //实际代码
             //测试代码
-            Account account = DataInteraction.login("1008", "5678");
+            //Account account = DataInteraction.login("1008", "5678");
             //测试代码
             if(null == account.getAccountid()){
                 out.print("{\"logInfo\":\"-1\"}");//用户不存在
