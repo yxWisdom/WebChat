@@ -398,4 +398,20 @@ public class DataInteraction {
             return 1;
     }
 
+public static int ADDGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement dostmt = conn.createStatement();
+        int rs = dostmt.executeUpdate("INSERT INTO GROUPS(GROUPID, ACCOUNTID, NAME) VALUES (GROUPORDER.nextval,'" +
+                group.getAccountid()+"','"+
+                group.getName()+"')");
+
+        dostmt.close();
+        conn.close();
+        if( 0 == rs){
+            return -1;
+        }
+        else
+            return 1;
+    }
 }
