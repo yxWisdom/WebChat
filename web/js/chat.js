@@ -8,7 +8,6 @@ $(function () {
     var messagesDiv=$("#messages");
     messagesDiv.height(messagesDiv.parent().height()-144);
     currentUserId = $.cookie("accountid");
-    alert(currentUserId);
     loadRecentMessageList(currentUserId);
     loadFriendList(currentUserId);
 });
