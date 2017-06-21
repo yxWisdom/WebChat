@@ -57,7 +57,7 @@ public class DataInteraction {
     // sid_url:jdbc:oracle:thin:@192.168.56.1:1521:orclzoe
     // service_name_url:sid_urljdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1
 
-    public static final String DBURL = "jdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1";
+    public static final String DBURL = "jdbc:oracle:thin:@ALN-VAIO:1521:orcl";
     // 连接数据库的用户名
     public static final String DBUSER = "scott";
     // 连接数据库的密码
@@ -210,5 +210,104 @@ public class DataInteraction {
         con.close();
         if(0 == success1 | 0 == success2) return -1;//申请失败
         return 1;//申请成功
+    }
+
+    public static String readNewFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        ResultSet rs = stmt.executeQuery("Select friendid,nickname,photo From RELATIONS RE,INFO FR WHERE RE.STATE = 0 AND RE.ACCOUNTID="+ user.getAccountid()+" AND RE.FRIENDID = FR.ACCOUNTID");
+        String usernewfriends = DataInteraction.resultSetToJson(rs);
+        rs.close();
+        stmt.close();
+        conn.close();
+        return usernewfriends;
+    }
+
+    //////////////////////
+    public static String readFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        String retString = "\0";
+        ResultSet rs = null;
+        ResultSet rs1 = stmt.executeQuery("Select GROUPID From GROUPS WHERE RACCOUNTID="+ user.getAccountid());
+        while (rs1.next()){
+            String groupid = rs.getString("GROUPID");
+            rs = stmt.executeQuery("SELECT INFO.ACCOUNTID,INFO.NICKNAME,INFO.PHOTO,INFO.BIRTHDAY,INFO.GENDER " +
+                    "FROM RELATIONS,INFO WHERE RELATIONS.ACCOUNTID="+user.getAccountid()+"AND RELATIONS.FRIENDID = INFO.ACCOUNTID");
+            retString = retString + groupid + DataInteraction.resultSetToJson(rs);
+        }
+        rs.close();
+        rs1.close();
+        stmt.close();
+        conn.close();
+        return retString;
+    }
+
+    /////////////////////
+    public static String findUnreadFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        ResultSet rs = stmt.executeQuery("Select SENDER,nickname,photo,time,text From INFO FR,RELATIONS RE,(SELECT * FROM MESSAGE where receiver = "+ user.getAccountid()+" order by time desc) WHERE READ = 0 "
+                +" AND SENDER = FR.ACCOUNTID  AND ROWNUM = 1"); //得到结果集Statement stmt = con.createStatement()
+        String userfriends = DataInteraction.resultSetToJson(rs);
+        rs.close();
+        stmt.close();
+        conn.close();
+        return userfriends;
+    }///////////////////////////
+
+    public static Info readInfo(Info userInfo) throws ClassNotFoundException, java.sql.SQLException{
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        ResultSet rs = stmt.executeQuery("Select * From Info WHERE ACCOUNTID="+ userInfo.getAccountid()); //得到结果集Statement stmt = con.createStatement()
+        if(rs.next()) {
+            userInfo.setNickname(rs.getString("nickname"));
+            userInfo.setGender(rs.getString("gender"));
+            userInfo.setBirthday(rs.getString("birthday"));
+            userInfo.setPhoto(rs.getString("photo"));
+        }
+        rs.close();
+        stmt.close();
+        conn.close();
+        return userInfo;
+    }
+
+    ////////////////
+    public static String AgreeNewFriend(Relations relate) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
+        stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+        stmt.close();
+        conn.close();
+        conn = DriverManager.getConnection("jdbc:oracle:thin:@ALN-VAIO:1521:orcl", "scott", "tiger");//创建连接
+        stmt = conn.createStatement();//创建statement
+        ResultSet rs1 = stmt.executeQuery("SELECT STATE FROM RELATIONS WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
+        ResultSet rs2 = stmt.executeQuery("SELECT STATE FROM RELATIONS WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+        String ret= DataInteraction.resultSetToJson(rs1);
+        rs1.close();
+        rs2.close();
+        stmt.close();
+        conn.close();
+        return ret;
+        /*if (rs1.getString("state") == "0") {
+            ret = "-1";
+        }
+        else if(rs2.getString("state") == "0") {
+            ret = "-2";
+        }
+        else {
+            ret= "1";
+        }
+        rs1.close();
+        rs2.close();
+        stmt.close();
+        conn.close();
+        return ret;*/
     }
 }
