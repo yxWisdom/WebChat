@@ -30,11 +30,10 @@ public class AgreeNewFriendServlet extends HttpServlet {
         //uprelate.setAccountid(request.getParameter("accountid"));
         //uprelate.setFriendid(request.getParameter("friendid"));
         uprelate.setAccountid("1000");
-        uprelate.setFriendid("1020");
+        uprelate.setFriendid("1021");
 
         try{
-            String ifNew = DataInteraction.AgreeNewFriend(uprelate);
-            out.print("{\"ifNew\":\""+ifNew+"\"}");
+            out.print("[{\"ifNew\":\""+DataInteraction.AgreeNewFriend(uprelate)+"\"}]");
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
