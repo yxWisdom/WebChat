@@ -14,19 +14,19 @@ import java.sql.SQLException;
 @WebServlet("/DeleteHistoryServlet")
 public class DeleteHistoryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
-        ///*实际代码
+        //实际代码
         String   accountid = request.getParameter("accountid");
-        String[] messageid=request.getParameterValues("messageid[]");
-        //实际代码*/
-        ///*测试
+        String[] messageid = request.getParameterValues("messageid");
+        //实际代码
+        //测试
         //String   accountid = "1027";
         //String[] messageid={"3","4","5","6"};
-        //测试*/
+        //测试
         PrintWriter out = response.getWriter();
         try {
             out.print(DataInteraction.deleteHistory(accountid, messageid));

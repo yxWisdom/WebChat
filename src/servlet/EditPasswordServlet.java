@@ -13,28 +13,37 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-
-@WebServlet("/ReadUserFriendsServlet")
-public class ReadUserFriendsServlet extends HttpServlet {
+/**
+ * Created by ALN on 2017/6/21.
+ */
+@WebServlet("/EditPasswordServlet")
+public class EditPasswordServlet extends HttpServlet {
+    Account olduser = new Account();
+    Account newuser = new Account();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request,response);
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=utf-8");
-        Account account  = new Account();
-        account.setAccountid(request.getParameter("accountid"));
-        account.setAccountid("1007");
+        response.setContentType("text/html");
+        response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        try {
+        //olduser.setAccountid(request.getParameter("accountid"));
+        //newuser.setAccountid(request.getParameter("accountid"));
+        //olduser.setPassword(request.getParameter("oldpass"));
+        //newuser.setPassword(request.getParameter("newpass"));
+        olduser.setAccountid("1000");
+        newuser.setAccountid("1000");
+        olduser.setPassword("test");
+        newuser.setPassword("newpass");
 
-            out.print(DataInteraction.readFriends(account));
-
+        try{
+            out.print("[{\"EditPassword\":\""+ DataInteraction.EditPassword(olduser,newuser)+"\"}]");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
