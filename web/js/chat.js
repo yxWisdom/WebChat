@@ -16,7 +16,6 @@ function loadUserInfo() {
     $.getJSON("../AccountInfoServlet", {accountid: currentUserId}, function (userInfo) {
         var photo = userInfo[0]["PHOTO"];
         var nickname = userInfo[0]["NICKNAME"];
-        alert(photo);
         $("#photo").find("img").attr("src", photo);
         $("#nickname").find("p").text(nickname);
     })
@@ -126,16 +125,19 @@ function loadApplyList() {
         messageDiv.empty();
         for (var i = 0; i < applyList.length; ++i) {
             var apply = applyList[i];
-            messageDiv.append("<li id='user" + apply["FRIENDID"] + "' class='list-group-item' " +
-                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555' " +
-                "onclick='agree(this.id)'>" +
+            messageDiv.append("<li class='list-group-item' " +
+                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-2'>" +
                 "<img src='" + apply["PHOTO"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
-                "<div class='col-xs-10'>" + apply["NICKNAME"] + "(" + apply["FRIENDID"] + ")<br>请求添加你为好友</div></li>");
+                "<div class='col-xs-8'>" + apply["NICKNAME"] + "(" + apply["FRIENDID"] + ")<br>请求添加你为好友</div>" +
+                "<span id='user" + apply["FRIENDID"] + "' class='glyphicon glyphicon-ok-circle' " +
+                "style='font-size: x-large; color: dodgerblue' onclick='agree(this.id)'></span>" +
+                "<span class='glyphicon glyphicon-remove' style='font-size: x-large; color: #900000'></span>" +
+                "</li>");
         }
         if (applyList.length == 0) {
-            messageDiv.append("<li class='list-group-item'>暂无新的申请</li>");
+            messageDiv.append("<li class='list-group-item' style='background: transparent; border: none'>暂无新的申请</li>");
         }
     });
 }
@@ -147,13 +149,13 @@ function agree(applyUserId) {
     }, function (agreeInfo) {
         var noticeBox = $("#notice");
         var noticeBody = noticeBox.find(".modal-body");
-        if (agreeInfo["ifNew"] == -1) {
+        if (agreeInfo["ifNew"] == 1) {
             noticeBody.text("好友添加成功");
         } else {
             noticeBody.text("好友添加失败");
         }
         noticeBox.modal();
-        $(applyUserId).remove();
+        loadApplyList();
     })
 }
 
@@ -215,13 +217,17 @@ function changeSearchOption() {
 }
 
 function changeGroup() {
-    var friendId = $("#div_userinfo").find("label");
-    alert($("#div_userinfo").find("label").attr("id"));
+    var friendId = $("#div_userinfo").find("label").attr("id").substr("friend".length);
+    $.getJSON("../ShowAllGroupServlet", {accountid: friendId}, function (groupList) {
+
+    })
 }
 
 function deleteFriend() {
-    var friendId = $("#div_userinfo").find("label").attr("id").substr("user".length);
+    var friendId = $("#div_userinfo").find("label").attr("id");
     $.getJSON("../ConfirmDeleteFriendServlet", {accountid: currentUserId, friendid: friendId}, function () {
-
+        var noticeBox = $("#notice");
+        noticeBox.find(".modal-body").text("删除成功");
+        noticeBox.modal();
     });
 }

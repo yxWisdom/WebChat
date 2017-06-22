@@ -27,13 +27,11 @@ public class AgreeNewFriendServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //uprelate.setAccountid(request.getParameter("accountid"));
-        //uprelate.setFriendid(request.getParameter("friendid"));
-        uprelate.setAccountid("1000");
-        uprelate.setFriendid("1020");
+        uprelate.setAccountid(request.getParameter("accountid"));
+        uprelate.setFriendid(request.getParameter("friendid"));
 
         try{
-            out.print("[{\"ifNew\":\""+DataInteraction.AgreeNewFriend(uprelate)+"\"}]");
+            out.print("{\"ifNew\":\""+DataInteraction.AgreeNewFriend(uprelate)+"\"}");
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
