@@ -270,13 +270,35 @@ public class DataInteraction {
     }
 
     public static int AgreeNewFriend(Relations relate) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String usermin= new String();
+        String friendmin= new String();
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement stmt = conn.createStatement();//创建statement
-        int check1 = stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
-        int check2 = stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+        Statement stmt = conn.createStatement();
+        ResultSet rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID="+relate.getAccountid()+"ORDER BY GROUPID ) WHERE rownum=1");
+        if(rsuser.next()){
+            usermin = rsuser.getString("GROUPID");
+        }
+        rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID="+relate.getFriendid()+"ORDER BY GROUPID ) WHERE rownum=1");
+        if(rsuser.next()){
+            friendmin = rsuser.getString("GROUPID");
+        }
 
+        if( usermin==null | friendmin==null){
+            rsuser.close();
+            stmt.close();
+            conn.close();
+            return -2;
+        }
+        Statement stmt_do = conn.createStatement();//创建statement
+        int check1 = stmt_do.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=" + usermin +
+                " WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
+        int check2 = stmt_do.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=" + friendmin +
+                " WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+
+        rsuser.close();
         stmt.close();
+        stmt_do.close();
         conn.close();
 
         if( 0 == check1 | 0 == check2 ) return -1;
@@ -370,12 +392,33 @@ public class DataInteraction {
             return 1;
     }
 
+    public static String findMinGroupid(String accountid) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String mingid = new String();
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();
+        ResultSet rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID=" + accountid + "ORDER BY GROUPID ) WHERE rownum=1");
+        if (rsuser.next()) {
+            mingid = rsuser.getString("GROUPID");
+        }
+        rsuser.close();
+        stmt.close();
+        conn.close();
+        return mingid;
+    }
+
+
     public static int DeleteGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String mingid = DataInteraction.findMinGroupid(group.getAccountid());
+        if (mingid.equals(group.getGroupid())) {
+            return -1;
+        }
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
         Statement dostmt = conn.createStatement();
-        int rs_do = dostmt.executeUpdate("UPDATE RELATIONS SET GROUPID=0 WHERE GROUPID="+
-                group.getGroupid());
+        int rs_do = dostmt.executeUpdate("UPDATE RELATIONS SET GROUPID=" + mingid +
+                " WHERE GROUPID="+
+                    group.getGroupid());
         Statement stmt = conn.createStatement();//创建statement
         int rs = stmt.executeUpdate("DELETE FROM GROUPS  WHERE GROUPID=" +
                 group.getGroupid());
@@ -386,10 +429,11 @@ public class DataInteraction {
             return -2;
         }
         else if( 0== rs_do)
-            return -1;
+            return 2;
         else
             return 1;
     }
+
 
     public static int ADDGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
