@@ -27,8 +27,7 @@ public class ReadUserNewFriendServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //user.setAccountid(request.getParameter("accountid"));
-        user.setAccountid("1000");
+        user.setAccountid(request.getParameter("accountid"));
 
         try{
             String userNewFriends = DataInteraction.readNewFriends(user);

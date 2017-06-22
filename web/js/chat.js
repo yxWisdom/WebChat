@@ -8,9 +8,19 @@ $(function () {
     var messagesDiv=$("#messages");
     messagesDiv.height(messagesDiv.parent().height()-144);
     currentUserId = $.cookie("accountid");
+    loadUserInfo();
     loadRecentMessageList(currentUserId);
-    loadFriendList(currentUserId);
 });
+
+function loadUserInfo() {
+    $.getJSON("../AccountInfoServlet",{accountid:currentUserId},function (userInfo) {
+        var photo=userInfo[0]["PHOTO"];
+        var nickname=userInfo[0]["NICKNAME"];
+        alert(photo);
+        $("#photo").find("img").attr("src",photo);
+        $("#nickname").find("p").text(nickname);
+    })
+}
 
 // MessageList
 // friendId, friendNickname, friendPhoto, lastTime, lastMessage, messageNumber
@@ -79,7 +89,7 @@ function loadRecentMessageList() {
 function loadFriendList() {
     $.getJSON("FriendListServlet", {uid: currentUserId}, function (friendList) {
         var messageDiv = $("#messageList");
-        messageDiv.clear();
+        messageDiv.empty();
         for (var friend in friendList) {
             messageDiv.append("<li class='list-group-item'>" +
                 "<div class='row'>" +
@@ -146,15 +156,19 @@ function loadFriendList() {
 // FriendApply
 // id, nickname, photo
 function loadApplyList() {
-    $.getJSON("ApplyListServlet", {uid: currentUserId}, function (applyList) {
+    $.getJSON("../ReadUserNewFriendServlet", {accountid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
-        messageDiv.clear();
-        for (var apply in applyList) {
-            messageDiv.append("<li id='user" + apply["id"] + "' class='list-group-item' onclick='agree(this.id)'>" +
-                "<div class='row' " +
+        messageDiv.empty();
+        alert("abc");
+        for (var i=0;i<applyList.length;++i) {
+            var apply=applyList[i];
+            messageDiv.append("<li id='user" + apply["FRIENDID"] + "' class='list-group-item' " +
+                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555' " +
+                "onclick='agree(this.id)'>" +
+                "<div class='row'>" +
                 "<div class='col-xs-3'>" +
-                "<img src='" + apply["photo"] + "' class='img-circle' style='height: 30px; width: 30px;'></div>" +
-                "<div class='col-xs-6'>" + apply["nickname"] + "(" + apply["id"] + ")请求添加你为好友</div></li>");
+                "<img src='" + apply["PHOTO"] + "' class='img-circle' style='height: 30px; width: 30px;'></div>" +
+                "<div class='col-xs-9'>" + apply["NICKNAME"] + "(" + apply["FRIENDID"] + ")<br>请求添加你为好友</div></li>");
         }
     });
 }
