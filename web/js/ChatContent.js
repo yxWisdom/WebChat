@@ -2,7 +2,12 @@
  * Created by wisdom on 2017/6/19.
  */
 
+
+
 var chat_contents_height = 20;
+var userPhoto=-1;
+var friendPhoto
+var currentFriend;
 
 $(document).ready(function () {
     // $("#ChatContent").empty();
@@ -12,8 +17,10 @@ $(document).ready(function () {
     //var Test=[{"a":"aaa","b":"231"},{"a":"haha","b":"231"}];
     //alert(Test.length);
     //chatTo("123");
+    $.cookie("accountid","hah");
     if(document.getElementById("sendmsg123"))
         alert("123");
+    alert(currentUserId);
    //alert($("#sendmsg"));
    // alert($("#div_userinfo").find("label").attr("id"));
    
@@ -25,11 +32,6 @@ $(document).ready(function () {
     alert(json.name[0]);
 
     $("#sendmsg").click(function () {
-        // var text=$("#message").val();
-        // if(text) {
-        //     var textbox = new ChatContent.Text(text, "ai");
-        //     showMsg(textbox);
-        // }
         sendMsg();
     })
 })
@@ -37,15 +39,54 @@ $(document).ready(function () {
 function refresh()
 {
     var  messageList;
-    var csender =  $("#div_userinfo").find("label").attr("id")
+    var sender =  $("#div_userinfo").find("label").attr("id")
+    var receiver=$.cookie("accountid");
+    messageList=readNotReadMessage(sender,receiver);
+    for(var message in messageList)
+    {
+        if(message.text)
+        {
+            var textbox = new ChatContent.Text(text, "friend");
+            showMsg(textbox);
+        }
+    }
+    loadRecentMessageList();
+}
+
+function readNotReadFriend()
+{
+    var friendList=null;
     $.ajax({
         type: "POST",
         url: ServerUrl,
         async: false,
         dataType: "json",
         data: {
-            "id": id,
-            "reviver":$.cookie("accountid")
+            "receiver":currentUserId
+        },
+        success: function(Data) {
+            friendListList=Data;
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+    return friendList;
+}
+
+
+
+function readNotReadMessage(sender,receiver)
+{
+    var messageList=null;
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "sender":sender,
+            "receiver":receiver
         },
         success: function(Data) {
             messageList=Data;
@@ -54,51 +95,28 @@ function refresh()
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
-
-    haveread=[];
-
-   for(var message in messageList)
-   {
-       if(message.sender == csender)
-       {
-           var textbox = new ChatContent.Text(data.text,"sender");
-           showMsg(textbox);
-           haveread.push(message.messageid);
-       }else
-       {
-           var friend = document.getElementById("friend"+message.accountid);
-           if(friend)
-           {
-               var count=parseInt(friend.find("span").text())+1;
-               friend.find("span").text(count);
-           }else
-           {
-               messageDiv.append("<li id='message" + message.friendId + "' onclick='chatTo(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
-                   "<div class='row'>" +
-                   "<div class='col-xs-2'>" +
-                   "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
-                   "<div class='col-xs-10'>" +
-                   "<div class='row'>" +
-                   "<div class='col-xs-10'>" + message.friendNickname +
-                   "<div class='col-xs-2 pull-right'>" + message.lastTime +
-                   "</div>" +
-                   "<div class='row' style='margin-left: 0'>" + lastMessage +
-                   "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
-                   "</span></div></div></div></li>");
-           }
-
-       }
-   }
-}
-
-function readMessage(recevier)
-{
-    
+    return messageList;
 }
 
 function readMsgHistory()
 {
-
+    var msgHistory=null;
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "receiver":receiver
+        },
+        success: function(Data) {
+            msgHistory=Data;
+        },
+        error: function(e){
+            alert(e.name + ": " + e.message + "\n链接失败");
+        }
+    });
+    return messageList;
 }
 
 
@@ -118,6 +136,8 @@ function chatToFriend(Sid)
     label.attr("title",data.nickname);
     label.attr("data-content",str);
     label.attr("id",data.accountid);
+    currentPhoto = data.photo;
+    currentFriend = data.accountid;
 }
 
 
@@ -137,7 +157,13 @@ function chatTo(Sid) {
     label.attr("data-content",str);
     label.attr("id",data.accountid);
     $("#"+Sid).remove();
-
+    currentPhoto = data.photo;
+    var msgList = readNotReadMessage(id,currentUserId);
+    currentFriend = data.accountid;
+    for(var msg in msgList) {
+        var textbox = new ChatContent.Text(text, "friend");
+        showMsg(textbox);
+    }
 }
 function readFriendInfo(id) {
     var retData=null;
@@ -147,13 +173,11 @@ function readFriendInfo(id) {
         async: false,
         dataType: "json",
         data: {
-            "id": id
+            "accountid": id
         },
         beforeSend : function() {
             if(!id)
                 return false;
-        },
-        complete: function() {
         },
         success: function(Data) {
             retData = Data;
@@ -167,41 +191,41 @@ function readFriendInfo(id) {
 
 
 
-function readMsg() {
-    $.ajax({
-        type: "POST",
-        async: false,
-        url: ServerUrl,
-        dataType: "json",
-        data: {
-            "sender": $("#accountid").val(),
-            "receiver":$("#password").val(),
-            "text":  $("#message").val()
-        },
-        beforeSend : function() {
-            if(!data.text)
-            {
-                return false;
-            }
-        },
-        complete: function() {
-        },
-        success: function(Data) {
-            if(Data.info == "1")
-            {
-                var textbox = new ChatContent.Text(data.text,"user");
-                showMsg(textbox);
-                $("#message").text("");
-            }else
-            {
-                alert("消息发送失败！");
-            }
-        },
-        error: function(e){
-            alert(e.name + ": " + e.message + "\n链接失败");
-        }
-    });
-}
+// function readMsg() {
+//     $.ajax({
+//         type: "POST",
+//         async: false,
+//         url: ServerUrl,
+//         dataType: "json",
+//         data: {
+//             "sender": $("#accountid").val(),
+//             "receiver":$("#password").val(),
+//             "text":  $("#message").val()
+//         },
+//         beforeSend : function() {
+//             if(!data.text)
+//             {
+//                 return false;
+//             }
+//         },
+//         complete: function() {
+//         },
+//         success: function(Data) {
+//             if(Data.info == "1")
+//             {
+//                 var textbox = new ChatContent.Text(data.text,"user");
+//                 showMsg(textbox);
+//                 $("#message").text("");
+//             }else
+//             {
+//                 alert("消息发送失败！");
+//             }
+//         },
+//         error: function(e){
+//             alert(e.name + ": " + e.message + "\n链接失败");
+//         }
+//     });
+// }
 
 
 function sendMsg()
@@ -221,8 +245,6 @@ function sendMsg()
             {
                 return false;
             }
-        },
-        complete: function() {
         },
         success: function(Data) {
             if(Data.info == "1")
@@ -279,9 +301,9 @@ var ChatContent= {
         this.init = function() {
             ++ChatContent.counter;
             if(this.speaker === "user") {
-                this.dom = ChatContent.getDivHeadRight() + '<img src="../img/photo1.jpg">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadRight() + '<img src="../img/randomphoto'+userPhoto+'.JPG">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
             }else {
-                this.dom = ChatContent.getDivHeadLeft() + '<img src="../img/photo1.jpg">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadLeft() + '<img src="../img/randomphoto'+friendPhoto+'.JPG">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
             }
         };
 

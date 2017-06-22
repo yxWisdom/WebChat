@@ -57,7 +57,7 @@ public class DataInteraction {
     // sid_url:jdbc:oracle:thin:@192.168.56.1:1521:orclzoe
     // service_name_url:sid_urljdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1
 
-    public static final String DBURL = "jdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1";
+    public static final String DBURL = "jdbc:oracle:thin:@Ding:1521:orcl";
     // 连接数据库的用户名
     public static final String DBUSER = "scott";
     // 连接数据库的密码
@@ -134,10 +134,10 @@ public class DataInteraction {
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
 
         String selectString = "";
-        if(findaccountid.equals("null"))
+        if(findaccountid==null)
         {selectString = "Select * From INFO Where  nickname LIKE '%" + nickname +
                 "%'and accountid != '" + accountid + "'";}
-        else if (nickname.equals("null") )
+        else if (nickname==null)
         {selectString = "Select * From INFO Where accountid ='" +  findaccountid +
                 "'and accountid != '" + accountid + "'";}
         else {
