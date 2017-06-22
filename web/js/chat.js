@@ -128,7 +128,7 @@ function loadFriendList() {
                 "<ul class='list-group' style='margin: 0'>";
             for (var i = 0; i < friendList[group].length; ++i) {
                 var friend = friendList[group][i];
-                strToAppend += "<li id='friend" + friend["ACCOUTID"] + "' " +
+                strToAppend += "<li id='friend" + friend["ACCOUNTID"] + "' " +
                     "onclick='chatToFriend(this.id)' class='list-group-item' " +
                     "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
                     "<div class='row'>" +
@@ -192,7 +192,7 @@ function searchUsers() {
     var searchContent = $("#searchContent").val();
     var sendData = {};
     sendData.accountid = currentUserId;
-    sendData[searchOption] = searchContent
+    sendData[searchOption] = searchContent;
     $.getJSON("../SearchFriendServlet", sendData, function (userList) {
         var list = $("#searchList");
         list.empty();

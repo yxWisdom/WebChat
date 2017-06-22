@@ -18,8 +18,8 @@ import java.sql.SQLException;
  */
 @WebServlet("/ReadOneNotReadMegServlet")
 public class ReadOneNotReadMegServlet extends HttpServlet {
-    Message meg = new Message();
-    int ret=0;
+    private Message meg = new Message();
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -28,10 +28,8 @@ public class ReadOneNotReadMegServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //meg.setSender(request.getParameter("sender"));
-        //meg.setReceiver(request.getParameter("receiver"));
-        meg.setSender("1020");
-        meg.setReceiver("1000");
+        meg.setSender(request.getParameter("sender"));
+        meg.setReceiver(request.getParameter("receiver"));
 
         try{
             String FindUnreadTexts = DataInteraction.FindUnreadTexts(meg);
