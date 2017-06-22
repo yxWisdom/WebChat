@@ -29,7 +29,9 @@ public class DeleteGroupServlet extends HttpServlet {
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
         //group.setGroupid(request.getParameter("groupid"));
-        group.setGroupid("1");
+        //group.setAccountid(request.getParameter("accountid"));
+        group.setGroupid("4");
+        group.setAccountid("1020");
 
         try{
             out.print("[{\"DeleteGroup\":\""+ DataInteraction.DeleteGroup(group)+"\"}]");

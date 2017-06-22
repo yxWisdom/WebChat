@@ -30,7 +30,7 @@ public class AgreeNewFriendServlet extends HttpServlet {
         //uprelate.setAccountid(request.getParameter("accountid"));
         //uprelate.setFriendid(request.getParameter("friendid"));
         uprelate.setAccountid("1000");
-        uprelate.setFriendid("1021");
+        uprelate.setFriendid("1020");
 
         try{
             out.print("[{\"ifNew\":\""+DataInteraction.AgreeNewFriend(uprelate)+"\"}]");

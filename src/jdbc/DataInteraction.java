@@ -57,7 +57,7 @@ public class DataInteraction {
     // sid_url:jdbc:oracle:thin:@192.168.56.1:1521:orclzoe
     // service_name_url:sid_urljdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1
 
-    public static final String DBURL = "jdbc:oracle:thin:@Ding:1521:orcl";
+    public static final String DBURL = "jdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1";
     // 连接数据库的用户名
     public static final String DBUSER = "scott";
     // 连接数据库的密码
@@ -100,6 +100,9 @@ public class DataInteraction {
                 "VALUES (ACCOUNTORDER.currval ,'" + nickname + "','" + gender +
                 "',to_date('" + birthday + "','yyyy-mm-dd'),'" + photo + "')";
         stmt_insert.executeUpdate(insertInfo);
+        String insertGroup = "INSERT INTO Groups(Groupid,ACCOUNTID,NAME)VALUES (GROUPORDER.nextval," +
+                "ACCOUNTORDER.currval ,'我的好友')";
+        stmt_insert.executeUpdate(insertGroup);
         stmt_insert.close();
         String selectString = "Select accountid From INFO Where INFO.nickname ='" + nickname +
                 "' and INFO.gender = '" + gender + "' and INFO.birthday =to_date('" + birthday +"','yyyy-mm-dd hh24:mi:ss')"
@@ -134,10 +137,10 @@ public class DataInteraction {
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
 
         String selectString = "";
-        if(findaccountid==null)
+        if(null == findaccountid)
         {selectString = "Select * From INFO Where  nickname LIKE '%" + nickname +
                 "%'and accountid != '" + accountid + "'";}
-        else if (nickname==null)
+        else if (null == nickname )
         {selectString = "Select * From INFO Where accountid ='" +  findaccountid +
                 "'and accountid != '" + accountid + "'";}
         else {
@@ -223,8 +226,7 @@ public class DataInteraction {
         if(0 == success1 | 0 == success2) return -1;//申请失败
         return 1;//申请成功
     }
-
-    //aln
+//aln
     public static String readNewFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
@@ -235,27 +237,6 @@ public class DataInteraction {
         stmt.close();
         conn.close();
         return usernewfriends;
-    }
-
-    //////////////////////
-    public static String readFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement stmt = conn.createStatement();//创建statement
-        String retString = "\0";
-        ResultSet rs = null;
-        ResultSet rs1 = stmt.executeQuery("Select GROUPID From GROUPS WHERE RACCOUNTID="+ user.getAccountid());
-        while (rs1.next()){
-            String groupid = rs.getString("GROUPID");
-            rs = stmt.executeQuery("SELECT INFO.ACCOUNTID,INFO.NICKNAME,INFO.PHOTO,INFO.BIRTHDAY,INFO.GENDER " +
-                    "FROM RELATIONS,INFO WHERE RELATIONS.ACCOUNTID="+user.getAccountid()+"AND RELATIONS.FRIENDID = INFO.ACCOUNTID");
-            retString = retString + groupid + DataInteraction.resultSetToJson(rs);
-        }
-        rs.close();
-        rs1.close();
-        stmt.close();
-        conn.close();
-        return retString;
     }
 
     public static String findUnreadFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
@@ -289,13 +270,35 @@ public class DataInteraction {
     }
 
     public static int AgreeNewFriend(Relations relate) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String usermin= new String();
+        String friendmin= new String();
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement stmt = conn.createStatement();//创建statement
-        int check1 = stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
-        int check2 = stmt.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=0 WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+        Statement stmt = conn.createStatement();
+        ResultSet rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID="+relate.getAccountid()+"ORDER BY GROUPID ) WHERE rownum=1");
+        if(rsuser.next()){
+            usermin = rsuser.getString("GROUPID");
+        }
+        rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID="+relate.getFriendid()+"ORDER BY GROUPID ) WHERE rownum=1");
+        if(rsuser.next()){
+            friendmin = rsuser.getString("GROUPID");
+        }
 
+        if( usermin==null | friendmin==null){
+            rsuser.close();
+            stmt.close();
+            conn.close();
+            return -2;
+        }
+        Statement stmt_do = conn.createStatement();//创建statement
+        int check1 = stmt_do.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=" + usermin +
+                " WHERE ACCOUNTID=" + relate.getAccountid()+ "AND FRIENDID="+ relate.getFriendid());
+        int check2 = stmt_do.executeUpdate("UPDATE RELATIONS SET STATE=1,GROUPID=" + friendmin +
+                " WHERE FRIENDID=" + relate.getAccountid()+ "AND ACCOUNTID="+ relate.getFriendid());
+
+        rsuser.close();
         stmt.close();
+        stmt_do.close();
         conn.close();
 
         if( 0 == check1 | 0 == check2 ) return -1;
@@ -335,7 +338,6 @@ public class DataInteraction {
         return retString;
     }
 
-    ////////////////////next/////////////////////
     public static int SendMessage(Message meg) throws ClassNotFoundException, java.sql.SQLException, JSONException {
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
@@ -390,11 +392,131 @@ public class DataInteraction {
             return 1;
     }
 
+    public static String findMinGroupid(String accountid) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String mingid = new String();
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();
+        ResultSet rsuser = stmt.executeQuery("SELECT * FROM (SELECT * from GROUPS WHERE ACCOUNTID=" + accountid + "ORDER BY GROUPID ) WHERE rownum=1");
+        if (rsuser.next()) {
+            mingid = rsuser.getString("GROUPID");
+        }
+        rsuser.close();
+        stmt.close();
+        conn.close();
+        return mingid;
+    }
+
+
+    public static int DeleteGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        String mingid = DataInteraction.findMinGroupid(group.getAccountid());
+        if (mingid.equals(group.getGroupid())) {
+            return -1;
+        }
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement dostmt = conn.createStatement();
+        int rs_do = dostmt.executeUpdate("UPDATE RELATIONS SET GROUPID=" + mingid +
+                " WHERE GROUPID="+
+                    group.getGroupid());
+        Statement stmt = conn.createStatement();//创建statement
+        int rs = stmt.executeUpdate("DELETE FROM GROUPS  WHERE GROUPID=" +
+                group.getGroupid());
+
+        stmt.close();
+        conn.close();
+        if( 0 == rs){
+            return -2;
+        }
+        else if( 0== rs_do)
+            return 2;
+        else
+            return 1;
+    }
+
+
+    public static int ADDGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement dostmt = conn.createStatement();
+        int rs = dostmt.executeUpdate("INSERT INTO GROUPS(GROUPID, ACCOUNTID, NAME) VALUES (GROUPORDER.nextval,'" +
+                group.getAccountid()+"','"+
+                group.getName()+"')");
+
+        dostmt.close();
+        conn.close();
+        if( 0 == rs){
+            return -1;
+        }
+        else
+            return 1;
+    }
+
+    public static int EditPassword(Account olduser,Account newuser) throws ClassNotFoundException, java.sql.SQLException, JSONException {
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT PASSWORD FROM ACCOUNT WHERE ACCOUNTID=" +
+                newuser.getAccountid());
+        if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
+            return -3;//密码错误
+        }
+        if ((olduser.getPassword()).equals(rs.getString("PASSWORD"))) {
+            Statement dostmt = conn.createStatement();
+            int rs_do = dostmt.executeUpdate("UPDATE ACCOUNT SET PASSWORD='" +
+                    newuser.getPassword() +
+                    "' WHERE ACCOUNTID=" +
+                    newuser.getAccountid());
+            if (0 == rs_do) {
+                rs.close();
+                dostmt.close();
+                stmt.close();
+                conn.close();
+                return -2;
+            } else {
+                rs.close();
+                dostmt.close();
+                stmt.close();
+                conn.close();
+                return 1;
+            }
+        } else {
+            rs.close();
+            stmt.close();
+            conn.close();
+            return -1;//密码错误
+        }
+    }
+//aln
+    public static String readFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException {
+        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+        Statement stmt = conn.createStatement();//创建statement
+        ResultSet rs = stmt.executeQuery("Select GROUPID,NAME From GROUPS WHERE ACCOUNTID=" + user.getAccountid() + "Order by GROUPID");
+
+        String jsonString = "{";
+        while (rs.next()) {
+            Statement stmt_info = conn.createStatement();//创建statement
+            ResultSet rs_info = stmt_info.executeQuery("Select * From INFO WHERE INFO.ACCOUNTID in " +
+                    "( select relations.FRIENDID from relations where relations.GROUPID = '"
+                    + rs.getString("groupid") + "'and RELATIONS.STATE = '1') Order by INFO.ACCOUNTID");
+            jsonString += "\"" + rs.getString("name")+ "\":" + resultSetToJson(rs_info) + ",";
+        }
+        jsonString = jsonString.substring(0, jsonString.length() - 1);
+        jsonString += "}";
+        rs.close();
+        stmt.close();
+        conn.close();
+        return jsonString;
+    }
     public static boolean deleteFriend(String accountid, String friendid) throws ClassNotFoundException, SQLException {
 
         String deleteString = "Delete from RELATIONS where (ACCOUNTID = '"+accountid+"' and FRIENDID = '"+friendid
                 +"') or (ACCOUNTID = '"+friendid+"' and FRIENDID = '"+accountid+"')";
-        return update(deleteString);//申请成功
+        return update(deleteString);
     }
     public static String searchHistory(String accountid, String friendid)throws ClassNotFoundException ,SQLException ,JSONException{
 
@@ -462,42 +584,19 @@ public class DataInteraction {
         updateString += ")";
         return update(updateString);
     }
+//201706220138
+    public static boolean moveFriend(String accountid, String friendid, String groupid) throws ClassNotFoundException, SQLException {
 
-    public static int DeleteGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement dostmt = conn.createStatement();
-        int rs_do = dostmt.executeUpdate("UPDATE RELATIONS SET GROUPID=0 WHERE GROUPID="+
-                    group.getGroupid());
-        Statement stmt = conn.createStatement();//创建statement
-        int rs = stmt.executeUpdate("DELETE FROM GROUPS  WHERE GROUPID=" +
-                group.getGroupid());
-
-        stmt.close();
-        conn.close();
-        if( 0 == rs){
-            return -2;
-        }
-        else if( 0== rs_do)
-            return -1;
-        else
-            return 1;
+        String updateString = "update relations set groupid = '"+ groupid
+                +"'where ACCOUNTID = '"+accountid+"' and FRIENDID = '"+ friendid + "'";
+        return update(updateString);
     }
+    public static String updateAccountInfo(String accountid,String nickname ,String gender,String birthday) throws ClassNotFoundException, SQLException ,JSONException{
 
-public static int ADDGroup(Groups group) throws ClassNotFoundException, java.sql.SQLException, JSONException {
-        Class.forName("oracle.jdbc.OracleDriver");//加载驱动
-        Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
-        Statement dostmt = conn.createStatement();
-        int rs = dostmt.executeUpdate("INSERT INTO GROUPS(GROUPID, ACCOUNTID, NAME) VALUES (GROUPORDER.nextval,'" +
-                group.getAccountid()+"','"+
-                group.getName()+"')");
-
-        dostmt.close();
-        conn.close();
-        if( 0 == rs){
-            return -1;
-        }
-        else
-            return 1;
+        String updateString = "update info set nickname = '"+ nickname +"',gender = '" + gender
+                + "',birthday = to_date('" + birthday + "','yyyy-mm-dd hh24:mi:ss') where ACCOUNTID = '" + accountid + "'";
+        update(updateString);
+        return getAccountInfo(accountid);
     }
+//201706220138
 }
