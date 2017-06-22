@@ -27,8 +27,7 @@ public class ShowAllGroupsServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //group.setAccountid(request.getParameter("accountid"));
-        group.setAccountid("1000");
+        group.setAccountid(request.getParameter("accountid"));
 
         try{
             String reslut = DataInteraction.ShowAllGroups(group);
