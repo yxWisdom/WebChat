@@ -6,7 +6,7 @@
 
 var chat_contents_height = 20;
 var userPhoto=-1;
-var friendPhoto
+var friendPhoto;
 // var currentFriend;
 
 $(document).ready(function () {
@@ -123,53 +123,53 @@ function readMsgHistory()
 function chatToFriend(Sid)
 {
     id = Sid.substr("friend".length);
-    var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
-    while(!data)
-    {
-        data = readFriendInfo(id);
-    }
+    var  data = null ; //{"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    data = readFriendInfo(id);
     var str;
-    str = "账号："+data.accountid+"<br>"+"昵称："+data.nickname+"<br>"+"性别："+data.gender+"<br>"+"出生日期："+data.birthday;
+    var birthday= data.BIRTHDAY;
+    birthday = birthday.substr(0,10);
+    str = "账号："+data.ACCOUNTID+"<br>"+"昵称："+data.NICKNAME+"<br>"+"性别："+data.GENDER+"<br>"+"生日："+birthday;
     var label = $("#div_userinfo").find("label");
-    label.text(data.nickname);
-    label.attr("data-original-title",data.nickname);
-    label.attr("title",data.nickname);
+    label.text(data.NICKNAME);
+    label.attr("data-original-title",data.NICKNAME);
+    label.attr("title",data.NICKNAME);
     label.attr("data-content",str);
-    label.attr("id",data.accountid);
-    currentPhoto = data.photo;
-    currentFriend = data.accountid;
+    label.attr("id",data.ACCOUNTID);
+    currentPhoto = data.PHOTO;
+    currentFriend = data.ACCOUNTID;
 }
 
 
 function chatTo(Sid) {
     id=Sid.substr("message".length);
-    var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    //var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    var data=null;
     while(!data)
     {
         data = readFriendInfo(id);
     }
     var str;
-    str = "账号："+data.accountid+"<br>"+"昵称："+data.nickname+"<br>"+"性别："+data.gender+"<br>"+"出生日期："+data.birthday;
+    str = "账号："+data.ACCOUNTID+"<br>"+"昵称："+data.NICKNAME+"<br>"+"性别："+data.GENDER+"<br>"+"出生日期："+data.BIRTHDAY;
     var label = $("#div_userinfo").find("label");
-    label.text(data.nickname);
-    label.attr("data-original-title",data.nickname);
-    label.attr("title",data.nickname);
+    label.text(data.NICKNAME);
+    label.attr("data-original-title",data.NICKNAME);
+    label.attr("title",data.NICKNAME);
     label.attr("data-content",str);
-    label.attr("id",data.accountid);
+    label.attr("id",data.ACCOUNTID);
     $("#"+Sid).remove();
     currentPhoto = data.photo;
-    var msgList = readNotReadMessage(id,currentUserId);
-    currentFriend = data.accountid;
-    for(var msg in msgList) {
-        var textbox = new ChatContent.Text(text, "friend");
-        showMsg(textbox);
-    }
+    // var msgList = readNotReadMessage(id,currentUserId);
+    // currentFriend = data.accountid;
+    // for(var msg in msgList) {
+    //     var textbox = new ChatContent.Text(text, "friend");
+    //     showMsg(textbox);
+    // }
 }
 function readFriendInfo(id) {
     var retData=null;
     $.ajax({
         type: "POST",
-        url: "../ReadUserFriendsServlet",
+        url: "../AccountInfoServlet",
         async: false,
         dataType: "json",
         data: {
@@ -180,7 +180,7 @@ function readFriendInfo(id) {
                 return false;
         },
         success: function(Data) {
-            retData = Data;
+            retData = Data[0];
         },
         error: function(e){
             alert(e.name + ": " + e.message + "\n链接失败");
