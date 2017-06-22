@@ -14,27 +14,32 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 
-@WebServlet("/ReadUserFriendsServlet")
-public class ReadUserFriendsServlet extends HttpServlet {
+@WebServlet("/UpdateAccountInfoServlet")
+public class UpdateAccountInfoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         response.setContentType("text/html;charset=utf-8");
-        Account account  = new Account();
-        account.setAccountid(request.getParameter("accountid"));
-        account.setAccountid("1007");
+        String accountid = request.getParameter("accountid");
+        String nickname = request.getParameter("nickname");;
+        String gender = request.getParameter("gender");;
+        String birthday = request.getParameter("birthday");;
         PrintWriter out = response.getWriter();
         try {
-
-            out.print(DataInteraction.readFriends(account));
-
+            //实际代码
+            out.print(DataInteraction.updateAccountInfo(accountid,nickname,gender,birthday));
+            //实际代码
+            //测试代码
+            //out.print(DataInteraction.updateAccountInfo("1007","闵玧智","女","20161112"));
+            //测试代码
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (JSONException e){
+        }catch (JSONException e){
             e.printStackTrace();
         }
     }
