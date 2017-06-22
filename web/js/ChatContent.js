@@ -7,7 +7,7 @@
 var chat_contents_height = 20;
 var userPhoto=-1;
 var friendPhoto
-var currentFriend;
+// var currentFriend;
 
 $(document).ready(function () {
     // $("#ChatContent").empty();
@@ -17,19 +17,19 @@ $(document).ready(function () {
     //var Test=[{"a":"aaa","b":"231"},{"a":"haha","b":"231"}];
     //alert(Test.length);
     //chatTo("123");
-    $.cookie("accountid","hah");
-    if(document.getElementById("sendmsg123"))
-        alert("123");
-    alert(currentUserId);
+    //$.cookie("accountid","hah");
+    //if(document.getElementById("sendmsg123"))
+        //alert("123");
+    //alert(currentUserId);
    //alert($("#sendmsg"));
    // alert($("#div_userinfo").find("label").attr("id"));
    
-    array=[];
-    array.push("1");
-    array.push("2");
-    json={"name":array};
-    //if("1,2"===array.toString())
-    alert(json.name[0]);
+    // array=[];
+    // array.push("1");
+    // array.push("2");
+    // json={"name":array};
+    // //if("1,2"===array.toString())
+    // alert(json.name[0]);
 
     $("#sendmsg").click(function () {
         sendMsg();
@@ -40,7 +40,7 @@ function refresh()
 {
     var  messageList;
     var sender =  $("#div_userinfo").find("label").attr("id")
-    var receiver=$.cookie("accountid");
+    var receiver=currentUserId;
     messageList=readNotReadMessage(sender,receiver);
     for(var message in messageList)
     {
@@ -58,11 +58,11 @@ function readNotReadFriend()
     var friendList=null;
     $.ajax({
         type: "POST",
-        url: ServerUrl,
+        url:"",
         async: false,
         dataType: "json",
         data: {
-            "receiver":currentUserId
+            "accountid":currentUserId
         },
         success: function(Data) {
             friendListList=Data;
@@ -169,7 +169,7 @@ function readFriendInfo(id) {
     var retData=null;
     $.ajax({
         type: "POST",
-        url: ServerUrl,
+        url: "../ReadUserFriendsServlet",
         async: false,
         dataType: "json",
         data: {

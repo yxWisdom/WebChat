@@ -5,21 +5,142 @@
     <title>Title</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/content.css">
+    <!--<link rel="stylesheet" href="../css/style.css">-->
     <!--<link rel="stylesheet" href="../css/boilerplate.css">-->
     <script src="../js/jquery-3.1.0.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/jquery.backstretch.js"></script>
     <script src="../js/jquery.cookie.js"></script>
     <script src="../js/msghistory.js"></script>
-</head>
-<div class="container" >
-    <div id = "msgHistory" style="height: 400px;width: 400px">
+    <script src="../js/ChatContent.js"></script>
+    <style>
 
-    </div>
-    <button type="button" value="苹果" onclick="selectAll()">全选</button>
-    <button type="button" onclick="reSelect()">取消</button>
-    <button type="button" onclick="deleteMsg()">删除</button>
-    <button type="button" onclick="askMsgHistroy()">请求</button>
+        .tableText{
+            line-height: 25px;
+            font-size: 18px;
+        }
+        .tableInput{
+            line-height: 25px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<div class="container-fluid">
+    <button class="btn btn-primary btn-lg"  onclick="askMsgHistroy()"></button>
+</div>
+<div class="container-fluid">
+    <button class="btn btn-primary btn-lg"  onclick="loadInfo()"></button>
+</div>
+<!--历史纪录模态框-->
+<div class="modal fade" id="ChatHistoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 100px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">聊天历史纪录</h4>
+            </div>
+            <div class="modal-body" id="info" name="info">
+                <div class="container" >
+                    <div id = "msgHistory" style="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="deleteMsg()">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 修改个人资料模态框-->
+<div class="modal fade" id="ChangeInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 100px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="" align="center">修改个人信息</h4>
+            </div>
+            <div class="modal-body" >
+                <div  align="center"  >
+                    <table style="border-collapse: separate;border-spacing: 10px">
+                        <tr>
+                            <td ><label class="tableText" ><b>昵称</b></label></td>
+                            <td style=" margin-left: 10px;">
+                                <input id="nickname" type="text" class="form-control tableInput" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="tableText"><b>性别</b></label></td>
+                            <td >
+                                <select id="gender" name="gender" class="form-control tableInput" >
+                                    <option value ="男">男</option>
+                                    <option value ="女">女</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="tableText" ><b>生日</b></label></td>
+                            <td style=" margin-left: 10px;">
+                                <input type="date" id = "birthday"class="form-control tableInput" value=""/>
+                            </td>
+                        </tr>
+                        </trmargin-left>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="changeInfo()">修改</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 修改登陆密码模态框-->
+<div class="modal fade" id="ChangePwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 100px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"  align="center">修改个人信息</h4>
+            </div>
+            <div class="modal-body" >
+                <div  align="center"  >
+                    <table style="border-collapse: separate;border-spacing: 10px">
+                        <tr>
+                            <td ><label class="tableText" ><b>昵称</b></label></td>
+                            <td style=" margin-left: 10px;">
+                                <input id="nickname" type="text" class="form-control tableInput" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="tableText"><b>性别</b></label></td>
+                            <td >
+                                <select id="gender" name="gender" class="form-control tableInput" >
+                                    <option value ="男">男</option>
+                                    <option value ="女">女</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="tableText" ><b>生日</b></label></td>
+                            <td style=" margin-left: 10px;">
+                                <input type="date" id = "birthday"class="form-control tableInput" value=""/>
+                            </td>
+                        </tr>
+                        </trmargin-left>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="changeInfo()">修改</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
 </div>
 </body>
 </html>

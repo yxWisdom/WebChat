@@ -7,25 +7,37 @@ var currentFriend = "1002";
 
 $(document).ready(function () {
     //showMsgHistory();
-    alert(currentFriend);
+    //alert(currentFriend);
+  
 })
 
 
 
 function showMsgHistory(msgList) {
     //var msgList=[{"messageid":"1001","text":"你好啊"},{"messageid":"1002","text":"你好啊,haha"},{"messageid":"1003","text":"你好啊,hhhhhhh"}];
+    $("#msgHistory").empty();
     if(!msgList || msgList.length<=0)
         return ;
-    $("#msgHistory").empty();
-    var str = '<form action="" method="post"></form> 聊天历史纪录<br/> <label>'
+    var str = '<form action="" method="post"></form> <label>'
     for(var i=0; i<msgList.length; i++)
     {
         var msg = msgList[i].SENDER+":"+ msgList[i].TEXT +"--"+ msgList[i].TIME;
         str+=' <input type="checkbox" name = "checkItem" value= "' + msgList[i].MESSAGEID + '"/>' + msg + '<br/>';
     }
-    str+='</label></form>';
+    str+='</label></form><br/>';
+    str+=' <label>全选：<input id= "isSelectALL" type="checkbox" value="select" onclick="selectAllOrNot()"/></label>'
     $("#msgHistory").append(str);
 }
+
+
+function selectAllOrNot()
+{
+    if($("#isSelectALL").prop("checked"))
+        $("[name=checkItem]:checkbox").attr("checked",true);
+    else
+        $("[name=checkItem]:checkbox").attr("checked",false);
+}
+
 
 
 function selectAll() {
@@ -86,4 +98,41 @@ function askMsgHistroy()
         }
     });
     showMsgHistory(msgHistory);
+    $('#ChatHistoryModal').modal('show');
+}
+
+
+function  loadInfo() {
+    var info = readFriendInfo(currentUserId);
+    if(info)
+    {
+        $("#nickname").val(info.nickname);
+        $("#gender").val(info.gender).text(info.gender);
+        $("#birthday").val(info.birthday);
+    }
+    $('#ChangeInfoModal').modal('show');
+    
+}
+function changeInfo()
+{
+    $.ajax({
+        type: "POST",
+        url: ServerUrl,
+        async: false,
+        dataType: "json",
+        data: {
+            "accountid":currentUserId,
+            "nickname":  $("#nickname").val(),
+            "gender"  :  $("#gender").val(),
+            "birthday":  $("#gender").val()
+        },
+        success:function (data) {
+            if(data)
+                alert("修改成功");
+        },
+        errer:function () {
+            alert("修改失败");
+        }
+    })
+    loadInfo();
 }
