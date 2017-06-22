@@ -1,7 +1,7 @@
 package servlet;
 
 import jdbc.DataInteraction;
-import my.*;
+import my.Account;
 import org.json.JSONException;
 
 import javax.servlet.ServletException;
@@ -14,11 +14,12 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 /**
- * Created by ALN on 2017/6/20.
+ * Created by ALN on 2017/6/21.
  */
-@WebServlet("/ReadUserNewFriendServlet")
-public class ReadUserNewFriendServlet extends HttpServlet {
-    Account user=new Account();
+@WebServlet("/EditPasswordServlet")
+public class EditPasswordServlet extends HttpServlet {
+    Account olduser = new Account();
+    Account newuser = new Account();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -27,16 +28,22 @@ public class ReadUserNewFriendServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        user.setAccountid(request.getParameter("accountid"));
+        //olduser.setAccountid(request.getParameter("accountid"));
+        //newuser.setAccountid(request.getParameter("accountid"));
+        //olduser.setPassword(request.getParameter("oldpass"));
+        //newuser.setPassword(request.getParameter("newpass"));
+        olduser.setAccountid("1000");
+        newuser.setAccountid("1000");
+        olduser.setPassword("test");
+        newuser.setPassword("newpass");
 
         try{
-            String userNewFriends = DataInteraction.readNewFriends(user);
-            out.print(userNewFriends);
-        }catch (ClassNotFoundException e) {
+            out.print("[{\"EditPassword\":\""+ DataInteraction.EditPassword(olduser,newuser)+"\"}]");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

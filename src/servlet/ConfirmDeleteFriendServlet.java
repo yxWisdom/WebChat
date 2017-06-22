@@ -1,7 +1,6 @@
 package servlet;
 
 import jdbc.DataInteraction;
-import my.Account;
 import org.json.JSONException;
 
 import javax.servlet.ServletException;
@@ -14,27 +13,27 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 
-@WebServlet("/ReadUserFriendsServlet")
-public class ReadUserFriendsServlet extends HttpServlet {
+@WebServlet("/ConfirmDeleteFriendServlet")
+public class ConfirmDeleteFriendServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request,response);
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
-        Account account  = new Account();
-        account.setAccountid(request.getParameter("accountid"));
-        //account.setAccountid("1007");
+        String accountid = request.getParameter("accountid");
+        String friendid = request.getParameter("friendid");
         PrintWriter out = response.getWriter();
         try {
-
-            out.print(DataInteraction.readFriends(account));
-
+            //实际代码
+            out.print(DataInteraction.deleteFriend(accountid,friendid));
+            //实际代码
+            //测试代码
+            //out.print(DataInteraction.deleteFriend("1027","1028"));
+            //测试代码
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (JSONException e){
             e.printStackTrace();
         }
     }

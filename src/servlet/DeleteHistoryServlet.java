@@ -1,8 +1,6 @@
 package servlet;
 
 import jdbc.DataInteraction;
-import my.*;
-import org.json.JSONException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,30 +11,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-/**
- * Created by ALN on 2017/6/20.
- */
-@WebServlet("/ReadUserNewFriendServlet")
-public class ReadUserNewFriendServlet extends HttpServlet {
-    Account user=new Account();
+@WebServlet("/DeleteHistoryServlet")
+public class DeleteHistoryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.setCharacterEncoding("gb2312");
+        response.setContentType("text/html;charset=utf-8");
+        //实际代码
+        String   accountid = request.getParameter("accountid");
+        String[] messageid = request.getParameterValues("messageid");
+        //实际代码
+        //测试
+        //String   accountid = "1027";
+        //String[] messageid={"3","4","5","6"};
+        //测试
         PrintWriter out = response.getWriter();
-        user.setAccountid(request.getParameter("accountid"));
-
-        try{
-            String userNewFriends = DataInteraction.readNewFriends(user);
-            out.print(userNewFriends);
-        }catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }catch (JSONException e) {
+        try {
+            out.print(DataInteraction.deleteHistory(accountid, messageid));
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

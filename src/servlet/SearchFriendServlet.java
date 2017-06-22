@@ -30,9 +30,12 @@ public class SearchFriendServlet extends HttpServlet {
             //实际代码
             out.print(DataInteraction.findAccount(accountid,findaccountid,nickname));
             //实际代码
-            //测试代码
-              //out.print(DataInteraction.findAccount("1027","1028","国"));
-            //测试代码
+            /*//测试代码
+            out.print(DataInteraction.findAccount("1027","1027","国"));
+            out.print(DataInteraction.findAccount("1027","1028","号"));
+            out.print(DataInteraction.findAccount("1027","1028","null"));
+            out.print(DataInteraction.findAccount("1027","null","国"));
+            //测试代码*/
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
