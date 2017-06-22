@@ -24,7 +24,7 @@ public class ReadUserFriendsServlet extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         Account account  = new Account();
         account.setAccountid(request.getParameter("accountid"));
-        account.setAccountid("1007");
+        //account.setAccountid("1007");
         PrintWriter out = response.getWriter();
         try {
 

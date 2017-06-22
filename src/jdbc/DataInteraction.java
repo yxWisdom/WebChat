@@ -100,6 +100,9 @@ public class DataInteraction {
                 "VALUES (ACCOUNTORDER.currval ,'" + nickname + "','" + gender +
                 "',to_date('" + birthday + "','yyyy-mm-dd'),'" + photo + "')";
         stmt_insert.executeUpdate(insertInfo);
+        String insertGroup = "INSERT INTO Groups(Groupid,ACCOUNTID,NAME)VALUES (GROUPORDER.nextval," +
+                "ACCOUNTORDER.currval ,'我的好友')";
+        stmt_insert.executeUpdate(insertGroup);
         stmt_insert.close();
         String selectString = "Select accountid From INFO Where INFO.nickname ='" + nickname +
                 "' and INFO.gender = '" + gender + "' and INFO.birthday =to_date('" + birthday +"','yyyy-mm-dd hh24:mi:ss')"
