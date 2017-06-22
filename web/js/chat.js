@@ -165,8 +165,6 @@ function agree(applyUserId) {
     })
 }
 
-// Users
-// photo, nickname, id
 function searchUsers() {
     var searchOption=$("#searchOption").attr("value");
     var searchContent=$("#searchContent").val();
@@ -183,46 +181,20 @@ function searchUsers() {
                 "<div class='col-xs-2'>" +
                 "<img src='" + user["PHOTO"] + "' class='img-circle' style='height: 30px; width: 30px'></div>" +
                 "<div class='col-xs-9'>" + user["NICKNAME"] + "(" + user["ACCOUNTID"] + ")" + "</div>" +
-                "<span id='friend" + user.id + "' class='glyphicon glyphicon-send' style='color: dodgerblue; font-size: x-large;' onclick='addFriend(this.id)'></span>" +
+                "<span id='friend" + user["ACCOUNTID"] + "' class='glyphicon glyphicon-send' style='color: dodgerblue; font-size: x-large;' onclick='addFriend(this.id)'></span>" +
                 "</div></li>");
         }
-    });/*
-    var userList=[];
-    var user1={};
-    user1.photo="../img/randomphoto1.jpg";
-    user1.nickname="sdafds";
-    user1.id="1221321";
-    userList[0]=user1;
-    userList[1]=user1;
-    var list = $("#searchList");
-    list.empty();
-    for (var i=0;i<userList.length;++i) {
-        var user=userList[i];
-        list.append("<li class='list-group-item'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-2'>" +
-            "<img src='" + user.photo + "' class='img-circle' style='height: 30px; width: 30px'></div>" +
-            "<div class='col-xs-9'>" + user.nickname + "(" + user.id + ")" + "</div>" +
-            "<span id='friend" + user.id + "' class='glyphicon glyphicon-send' style='color: dodgerblue; font-size: x-large;' onclick='addFriend(this.id)'></span>" +
-            "</div></li>");
-    }*/
+    });
 }
 
 function addFriend(friendId) {
     var userId = friendId.substr("friend".length);
-    /*
-    $.getJSON("AddFriendServlet", {accountid: currentUserId, friendid: userId}, function () {
-        var noticeBox = $("#notice.modal-body");
-        noticeBox.empty();
-        noticeBox.append("请求已发送");
+    $.getJSON("../AddFriendServlet", {accountid: currentUserId, friendid: userId}, function () {
+        $("#searchUser").modal("hide");
+        var noticeBox = $("#notice").find(".modal-body");
+        noticeBox.text("请求已发送");
         $("#notice").modal();
-    });*/
-    $("#searchUser").modal("hide");
-    var noticeBox = $("#notice.modal-body");
-    noticeBox.empty();
-    alert(noticeBox.innerText);
-    noticeBox.val("请求已发送");
-    $("#notice").modal();
+    });
 }
 
 function changeSearchOption() {
@@ -244,5 +216,5 @@ function changeSearchOption() {
 
 function changeGroup() {
     var friendId=$("#div_userinfo").find("label");
-    alert(friendId);
+    alert($("#div_userinfo").find("label").attr("id"));
 }
