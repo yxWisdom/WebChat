@@ -44,42 +44,70 @@ function loadRecentMessageList() {
      "<div class='col-xs-6'>" + message["friendNickname"] + "<br>" + lastMessage + "</div></div></li>");
      }
      });*/
-    var tempMessages = [];
-    var tempMessage1 = {};
-    tempMessage1.friendId = "1233";
-    tempMessage1["friendNickname"] = "abc";
-    tempMessage1["friendPhoto"] = "../img/photo1.jpg";
-    tempMessage1["lastTime"] = "13:00";
-    tempMessage1["lastMessage"] = "hello";
-    tempMessage1.messageNumber = 2;
-    var tempMessage2 = tempMessage1;
-    tempMessages[0] = tempMessage1;
-    tempMessage2.lastMessage = "what does the fox say? dinglinglingling";
-    tempMessages[1] = tempMessage2;
-    var messageDiv = $("#messageList");
-    messageDiv.empty();
-    for (var i = 0; i < tempMessages.length; ++i) {
-        var message = tempMessages[i];
-        var lastMessage = message["lastMessage"];
-        if (lastMessage.length > 24) {
-            lastMessage = lastMessage.substr(0, 22) + "...";
+    $.getJSON("../FindNotReadFriendsServlet", {accoutid: currentUserId}, function (messageList) {
+        var messageDiv = $("#messageList");
+        messageDiv.empty();
+        for (var i = 0; i < messageList.length; ++i) {
+            var message = messageList[i];
+            var lastMessage = message["TEXT"];
+            if (lastMessage.length > 24) {
+                lastMessage = lastMessage.substr(0, 22) + "...";
+            }
+            var id=message["SENDER"];
+            var nickname = message["NICKNAME"];
+            var time = message["TIME"].substr("xxxx-xx-xx ".length, "xx:xx:xx".length);
+            messageDiv.append("<li id='message" + id + "' onclick='chatTo(this.id)' class='list-group-item' " +
+                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+                "<div class='row'>" +
+                "<div class='col-xs-2'>" +
+                "<img src='" + message["PHOTO"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
+                "<div class='col-xs-10'>" +
+                "<div class='row'>" +
+                "<div class='col-xs-10'>" + nickname +
+                "<div class='col-xs-2 pull-right'>" + time +
+                "</div>" +
+                "<div class='row' style='margin-left: 0'>" + lastMessage +
+                "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
+                "</span></div></div></div></li>");
         }
-        var nickname = message["friendNickname"];
-        nickname += message["lastTime"];
+    });
+    /*
+     var tempMessages = [];
+     var tempMessage1 = {};
+     tempMessage1.friendId = "1233";
+     tempMessage1["friendNickname"] = "abc";
+     tempMessage1["friendPhoto"] = "../img/photo1.jpg";
+     tempMessage1["lastTime"] = "13:00";
+     tempMessage1["lastMessage"] = "hello";
+     tempMessage1.messageNumber = 2;
+     var tempMessage2 = tempMessage1;
+     tempMessages[0] = tempMessage1;
+     tempMessage2.lastMessage = "what does the fox say? dinglinglingling";
+     tempMessages[1] = tempMessage2;
+     var messageDiv = $("#messageList");
+     messageDiv.empty();
+     for (var i = 0; i < tempMessages.length; ++i) {
+     var message = tempMessages[i];
+     var lastMessage = message["lastMessage"];
+     if (lastMessage.length > 24) {
+     lastMessage = lastMessage.substr(0, 22) + "...";
+     }
+     var nickname = message["friendNickname"];
+     nickname += message["lastTime"];
 
-        messageDiv.append("<li id='message" + message.friendId + "' onclick='chatTo(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-2'>" +
-            "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
-            "<div class='col-xs-10'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-10'>" + message.friendNickname +
-            "<div class='col-xs-2 pull-right'>" + message.lastTime +
-            "</div>" +
-            "<div class='row' style='margin-left: 0'>" + lastMessage +
-            "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
-            "</span></div></div></div></li>");
-    }
+     messageDiv.append("<li id='message" + message.friendId + "' onclick='chatTo(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+     "<div class='row'>" +
+     "<div class='col-xs-2'>" +
+     "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
+     "<div class='col-xs-10'>" +
+     "<div class='row'>" +
+     "<div class='col-xs-10'>" + message.friendNickname +
+     "<div class='col-xs-2 pull-right'>" + message.lastTime +
+     "</div>" +
+     "<div class='row' style='margin-left: 0'>" + lastMessage +
+     "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
+     "</span></div></div></div></li>");
+     }*/
 }
 
 function loadFriendList() {
