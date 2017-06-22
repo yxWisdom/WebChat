@@ -9,7 +9,8 @@ $(document).ready(function () {
     //showMsgHistory();
     //alert(currentFriend);
    //  alert($("#gender").val());
-
+    $('#ChangeGroupdModal').modal('show');
+    
 })
 
 
