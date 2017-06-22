@@ -2,7 +2,7 @@
  * Created by DingYiwei on 2017/6/19.
  */
 var currentUserId;
-var currentTab = 0;
+var currentTab = -1;
 
 $(function () {
     $("[data-toggle='popover']").popover();
@@ -11,6 +11,7 @@ $(function () {
     currentUserId = $.cookie("accountid");
     loadUserInfo();
     loadRecentMessageList(currentUserId);
+    loadGroups();
 });
 
 function loadUserInfo() {
@@ -23,6 +24,9 @@ function loadUserInfo() {
 }
 
 function loadRecentMessageList() {
+    if (currentTab == 0) {
+        return;
+    }
     currentTab = 0;
     $.getJSON("../FindNotReadFriendsServlet", {accoutid: currentUserId}, function (messageList) {
         var messageDiv = $("#messageList");
@@ -57,6 +61,9 @@ function loadRecentMessageList() {
 }
 
 function loadFriendList() {
+    if (currentTab == 1) {
+        return;
+    }
     currentTab = 1;
     $.getJSON("../ReadUserFriendsServlet", {accountid: currentUserId}, function (friendList) {
         var messageDiv = $("#messageList");
@@ -95,6 +102,9 @@ function loadFriendList() {
 }
 
 function loadApplyList() {
+    if (currentTab == 2) {
+        return;
+    }
     currentTab = 2;
     $.getJSON("../ReadUserNewFriendServlet", {accountid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
@@ -167,7 +177,10 @@ function searchUsers() {
 
 function addFriend(friendId) {
     var userId = friendId.substr("friend".length);
-    $.getJSON("../AddFriendServlet", {accountid: currentUserId, friendid: userId}, function () {
+    $.getJSON("../AddFriendServlet", {
+        accountid: currentUserId,
+        friendid: userId
+    }, function () {
         $("#searchUser").modal("hide");
         var noticeBox = $("#notice");
         noticeBox.find(".modal-body").text("请求已发送");
@@ -192,15 +205,36 @@ function changeSearchOption() {
     }
 }
 
-function changeGroup() {
-    var friendId = $("#div_userinfo").find("label").attr("id").substr("friend".length);
-    $.getJSON("../ShowAllGroupServlet", {accountid: friendId}, function (groupList) {
+function loadGroups() {
+    $.getJSON("../ShowAllGroupsServlet", {accountid: currentUserId}, function (groupList) {
+        var groupBox = $("#groupList");
+        for (var i = 0; i < groupList.length; ++i) {
+            var group = groupList[i];
+            groupBox.append("<li id='allgroup" + group["GROUPID"] + "' class='list-group-item' onclick='changeGroupOfFriend(this.id)'>" +
+                group["NAME"] + "</li>");
+        }
+    })
+}
 
+function changeGroupOfFriend(groupId) {
+    groupId = groupId.substr("allgroup".length);
+    var friendId = $("#div_userinfo").find("label").attr("id");
+    $.getJSON("../MoveFriendToGroupServlet", {
+        accountid: currentUserId,
+        friendid: friendId,
+        groupid: groupId
+    }, function () {
+        $("#groupSetting").modal("hide");
+        var noticeBox = $("#notice");
+        noticeBox.find(".modal-body").text("修改成功");
+        noticeBox.modal();
+        loadFriendList();
     })
 }
 
 function deleteFriend() {
-    $.getJSON("../ConfirmDeleteFriendServlet", {accountid: currentUserId, friendid: currentFriend}, function () {
+    var friendId = $("#div_userinfo").find("label").attr("id");
+    $.getJSON("../ConfirmDeleteFriendServlet", {accountid: currentUserId, friendid: friendId}, function () {
         var noticeBox = $("#notice");
         noticeBox.find(".modal-body").text("删除成功");
         noticeBox.modal();
