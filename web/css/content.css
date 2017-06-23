@@ -79,7 +79,7 @@
     border-bottom: 8px solid #eeeeee;
     border-top: 8px solid #eee;
     border-left: none;
-    border-right: 8px solid rgb(77, 144, 254);
+    border-right: 8px solid greenyellow;
 }
 
 .right{
@@ -95,6 +95,23 @@
     border-left: 8px solid rgb(77, 144, 254);
 }
 
+/*.ChatContent .contentboxright{*/
+    /*display: inline;*/
+    /*float: left;*/
+    /*max-width: 85%;*/
+
+    /*padding: 5px 10px;*/
+
+    /*word-wrap: break-word;*/
+    /*word-break: normal;*/
+
+    /*border-radius: 5px;*/
+
+    /*background-color: rgb(77, 144, 254);*/
+
+    /*line-height: 1.25em;*/
+/*}*/
+
 .ChatContent .contentbox{
     display: inline;
     float: left;
@@ -107,13 +124,14 @@
 
     border-radius: 5px;
 
-    background-color: rgb(77, 144, 254);
+    background-color:greenyellow;
 
     line-height: 1.25em;
 }
 
 .right .contentbox{
     float: right;
+    background-color:rgb(77, 144, 254);
 }
 
 
