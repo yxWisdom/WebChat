@@ -18,9 +18,9 @@ function showMsgHistory(msgList) {
 
 function selectAllOrNot() {
     if ($("#isSelectALL").prop("checked"))
-        $("[name=checkItem]:checkbox").attr("checked", true);
+        $("[name=checkItem]:checkbox").prop("checked", true);
     else
-        $("[name=checkItem]:checkbox").attr("checked", false);
+        $("[name=checkItem]:checkbox").prop("checked", false);
 }
 
 
