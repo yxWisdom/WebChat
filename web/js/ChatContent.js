@@ -116,6 +116,7 @@ function readNotReadMessage() {
 
 function chatToFriend(Sid) {
     document.getElementById("chatMask").style.display = "none";
+    $("#searchUser").modal("hide");
     $("#ChatContentBox").empty();
     id = Sid.substr("friend".length);
     var data = null; //{"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);

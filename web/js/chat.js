@@ -2,7 +2,7 @@
  * Created by DingYiwei on 2017/6/19.
  */
 var currentUserId;
-var userPhoto=null;
+var userPhoto = null;
 var currentTab = 0;
 
 $(function () {
@@ -28,7 +28,7 @@ function loadUserInfo() {
 
 function loadRecentMessageList() {
     currentTab = 0;
-    $.getJSON("../FindNotReadFriendsServlet", {accoutid: currentUserId}, function (messageList) {
+    $.getJSON("../FindNotReadFriendsServlet", {accountid: currentUserId}, function (messageList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
         for (var i = 0; i < messageList.length; ++i) {
@@ -151,10 +151,10 @@ function searchUsers() {
         for (var i = 0; i < userList.length; ++i) {
             var user = userList[i];
             var isFriend = user["isFriend"];
-            var spanId = isFriend == 0 ? "friend" : "message";
+            var spanId = isFriend == 0 ? "friend" : "messag";
             var classAndOnclick = isFriend == 0 ?
                 "class='glyphicon glyphicon-send' onclick='addFriend(this.id)'" :
-                "class='glyphicon glyphicon-comment' onclick='chatTo(this.id)'";
+                "class='glyphicon glyphicon-comment' onclick='chatToFriend(this.id)'";
             list.append("<li class='list-group-item'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-2'>" +

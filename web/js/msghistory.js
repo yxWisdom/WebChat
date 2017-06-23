@@ -49,19 +49,18 @@ function deleteMsg() {
                 "messageid": msgList
             },
 
-            success: function (Data) {
-                msgHistory = Data;
+            success: function (data) {
+                askMsgHistroy(data);
             },
-            error: function (e) {
-                alert(e.name + ": " + e.message + "\n链接失败");
+            error: function () {
+                showNotice("连接失败");
             }
         });
     }
     askMsgHistroy();
 }
 
-function askMsgHistroy() {
-    var msgHistory;
+function askMsgHistroy(msgHistory) {
     $.ajax({
         type: "POST",
         url: "../ChatHistoryServlet",
@@ -88,7 +87,7 @@ function loadInfo() {
     var birthday = info.BIRTHDAY;
     birthday = birthday.substr(0, 10);
     var index = 0;
-    if(gender == "女 ")
+    if (gender == "女 ")
         index = 1;
     if (info) {
         $("#accountid").val(info.ACCOUNTID);
@@ -161,6 +160,7 @@ function changePwd() {
                 $("#newPwd").val("");
                 $("#chkNewPwd").val("");
                 $("#changePwdInfo").hide();
+                $('#ChangePwdModal').modal('hide');
                 showNotice("修改成功");
             } else if (data[0].EditPassword == '-1') {
                 $("#oldPwd").val("");
