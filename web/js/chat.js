@@ -2,6 +2,7 @@
  * Created by DingYiwei on 2017/6/19.
  */
 var currentUserId;
+var userPhoto;
 
 $(function () {
     $("[data-toggle='popover']").popover();
@@ -11,11 +12,13 @@ $(function () {
     loadUserInfo();
     loadRecentMessageList(currentUserId);
     loadGroups();
+    self.setInterval("refresh()",2000);
 });
 
 function loadUserInfo() {
     $.getJSON("../AccountInfoServlet", {accountid: currentUserId}, function (userInfo) {
         var photo = userInfo[0]["PHOTO"];
+        userPhote = photo;
         var nickname = userInfo[0]["NICKNAME"];
         $("#photo").find("img").attr("src", photo);
         $("#nicknameOnTop").find("p").text(nickname);
