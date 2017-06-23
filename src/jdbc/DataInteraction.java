@@ -57,11 +57,11 @@ public class DataInteraction {
     // sid_url:jdbc:oracle:thin:@192.168.56.1:1521:orclzoe
     // service_name_url:sid_urljdbc:oracle:thin:@//192.168.56.1:1521/orcl.168.56.1
 
-    public static final String DBURL = "jdbc:oracle:thin:@Ding:1521:orcl";
+    public static final String DBURL = "jdbc:oracle:thin:@DESKTOP-PS5H2F2:1521:orcl";
     // 连接数据库的用户名
     public static final String DBUSER = "scott";
     // 连接数据库的密码
-    public static final String DBPWD = "tiger";
+    public static final String DBPWD = "wisdom";
 
     public static Account login(String accountid, String password)throws ClassNotFoundException ,SQLException {
 
@@ -239,13 +239,56 @@ public class DataInteraction {
         return usernewfriends;
     }
 
+    public static String UnreadFriendsSetToJson(ResultSet rs, String accountid ) throws ClassNotFoundException,  JSONException, java.sql.SQLException
+    {
+        // json数组
+        JSONArray array = new JSONArray();
+
+        // 获取列数
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+
+        // 遍历ResultSet中的每条数据
+        while (rs.next()) {
+            JSONObject jsonObj = new JSONObject();
+
+            Class.forName("oracle.jdbc.OracleDriver");//加载驱动
+            Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
+            Statement stmt_num = conn.createStatement();//创建statement
+            ResultSet rs_num = stmt_num.executeQuery("SELECT count(*) FROM MESSAGE where RECEIVER =" + accountid +
+                    " and SENDER=" + rs.getString("SENDER") +
+                    " and read=0 order by time desc");
+            if(rs_num.next()) {
+                jsonObj.put("UnreadNum", rs_num.getString("COUNT(*)"));
+            }
+            Statement stmt_text = conn.createStatement();
+            ResultSet rs_text = stmt_text.executeQuery("SELECT TEXT,TIME FROM (SELECT * from MESSAGE WHERE receiver=" + accountid +
+                    " and sender=" + rs.getString("SENDER") +
+                    " ORDER BY time DESC ) WHERE rownum=1");
+            if(rs_text.next()) {
+                jsonObj.put("TEXT", rs_text.getString("TEXT"));
+                jsonObj.put("TIME", rs_text.getString("TIME"));
+            }
+
+            // 遍历每一列
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName =metaData.getColumnLabel(i);
+                String value = rs.getString(columnName);
+                jsonObj.put(columnName, value);
+            }
+            array.put(jsonObj);
+        }
+
+        return array.toString();
+    }
+
     public static String findUnreadFriends(Account user) throws ClassNotFoundException, java.sql.SQLException,JSONException{
         Class.forName("oracle.jdbc.OracleDriver");//加载驱动
         Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
         Statement stmt = conn.createStatement();//创建statement
-        ResultSet rs = stmt.executeQuery("Select SENDER,nickname,photo,time,text From INFO FR,RELATIONS RE,(SELECT * FROM MESSAGE where receiver = "+ user.getAccountid()+" order by time desc) WHERE READ = 0 "
-                +" AND SENDER = FR.ACCOUNTID  AND ROWNUM = 1"); //得到结果集Statement stmt = con.createStatement()
-        String userfriends = DataInteraction.resultSetToJson(rs);
+        ResultSet rs = stmt.executeQuery("Select DISTINCT SENDER,nickname,photo From INFO FR,MESSAGE,RELATIONS RE WHERE SENDER = FR.ACCOUNTID AND read = 0 AND RE.accountid=" + user.getAccountid()+
+                " AND RE.friendid=SENDER"); //得到结果集Statement stmt = con.createStatement()
+        String userfriends = DataInteraction.UnreadFriendsSetToJson(rs,user.getAccountid());
         rs.close();
         stmt.close();
         conn.close();

@@ -135,3 +135,12 @@
     fond-size:16px;
     margin-bottom: 2px  ;
 }
+
+.tableText{
+    line-height: 25px;
+    font-size: 18px;
+}
+.tableInput{
+    line-height: 25px;
+    font-size: 15px;
+}
