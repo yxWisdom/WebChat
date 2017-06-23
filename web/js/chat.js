@@ -3,6 +3,7 @@
  */
 var currentUserId;
 var userPhoto;
+var currentTab = 0;
 
 $(function () {
     $("[data-toggle='popover']").popover();
@@ -10,9 +11,9 @@ $(function () {
     messagesDiv.height(messagesDiv.parent().height() - 144);
     currentUserId = $.cookie("accountid");
     loadUserInfo();
-    loadRecentMessageList(currentUserId);
+    loadRecentMessageList();
     loadGroups();
-    self.setInterval("refresh()",2000);
+    self.setInterval("refresh()", 2000);
 });
 
 function loadUserInfo() {
@@ -26,6 +27,7 @@ function loadUserInfo() {
 }
 
 function loadRecentMessageList() {
+    currentTab = 0;
     $.getJSON("../FindNotReadFriendsServlet", {accoutid: currentUserId}, function (messageList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
@@ -59,6 +61,7 @@ function loadRecentMessageList() {
 }
 
 function loadFriendList() {
+    currentTab = 1;
     $.getJSON("../ReadUserFriendsServlet", {accountid: currentUserId}, function (friendList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
@@ -96,6 +99,7 @@ function loadFriendList() {
 }
 
 function loadApplyList() {
+    currentTab = 2;
     $.getJSON("../ReadUserNewFriendServlet", {accountid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
@@ -231,4 +235,10 @@ function deleteFriend() {
         loadFriendList();
         document.getElementById("chatMask").style.display = "";
     });
+}
+
+function showNotice(noticeMessage) {
+    var noticeBox = $("#notice");
+    noticeBox.find(".modal-body").text(noticeMessage);
+    noticeBox.modal();
 }

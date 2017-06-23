@@ -2,7 +2,6 @@
  * Created by 22150 on 2017/6/21.
  */
 function showMsgHistory(msgList) {
-    //var msgList=[{"messageid":"1001","text":"你好啊"},{"messageid":"1002","text":"你好啊,haha"},{"messageid":"1003","text":"你好啊,hhhhhhh"}];
     $("#msgHistory").empty();
     if (!msgList || msgList.length <= 0)
         return;
@@ -74,24 +73,20 @@ function askMsgHistroy() {
         },
         success: function (Data) {
             msgHistory = Data;
+            showMsgHistory(msgHistory);
+            $('#ChatHistoryModal').modal('show');
         },
-        error: function (e) {
-            alert(e.name + ": " + e.message + "\n链接失败");
+        error: function () {
+            showNotice("连接失败");
         }
     });
-    showMsgHistory(msgHistory);
-    $('#ChatHistoryModal').modal('show');
 }
-
 
 function loadInfo() {
     var info = readFriendInfo(currentUserId);
     var gender = info.GENDER;
     var birthday = info.BIRTHDAY;
     birthday = birthday.substr(0, 10);
-    var index = 0;
-    if (gender == "女 ")
-        index = 1;
     if (info) {
         $("#nickname").val(info.NICKNAME);
         document.getElementById("gender").options[index].selected = true;
@@ -99,6 +94,7 @@ function loadInfo() {
     }
     $('#ChangeInfoModal').modal('show');
 }
+
 function changeInfo() {
     $.ajax({
         type: "POST",
@@ -113,15 +109,14 @@ function changeInfo() {
         },
         success: function (data) {
             if (data)
-                alert("修改成功");
+                showNotice("修改成功");
         },
         error: function () {
-            alert("修改失败");
+            showNotice("修改失败");
         }
     });
     loadInfo();
 }
-
 
 function loadChangePwd() {
     $("#oldPwd").val("");
@@ -130,6 +125,7 @@ function loadChangePwd() {
     $("#changePwdInfo").hide();
     $('#ChangePwdModal').modal('show');
 }
+
 function changePwd() {
     var oldpwd = $("#oldPwd").val();
     var newpwd = $("#newPwd").val();
@@ -161,8 +157,7 @@ function changePwd() {
                 $("#newPwd").val("");
                 $("#chkNewPwd").val("");
                 $("#changePwdInfo").hide();
-                // TODO
-                alert("修改成功");
+                showNotice("修改成功");
             } else if (data[0].EditPassword == '-1') {
                 $("#oldPwd").val("");
                 $("#newPwd").val("");
@@ -175,8 +170,7 @@ function changePwd() {
             }
         },
         error: function () {
-            // TODO
-            alert("修改失败");
+            showNotice("修改失败");
         }
     })
 }
@@ -231,13 +225,10 @@ function addGroup() {
                 return false;
         },
         success: function (data) {
-            // TODO
             if (data[0].ADDGroup == "1") {
-                $("#groupAlertInfo").text("添加分组成功！");
-                $("#groupInfoModal").modal("show");
+                showNotice("添加分组成功！");
             } else {
-                $("#groupAlertInfo").text("添加分组失败！");
-                $("#groupInfoModal").modal("show");
+                showNotice("添加分组失败！");
             }
         }
     });
@@ -260,16 +251,12 @@ function removeGroup() {
         beforeSend: function () {
         },
         success: function (data) {
-            // TODO
             if (data[0].DeleteGroup == "1" || data[0].DeleteGroup == "2") {
-                $("#groupAlertInfo").text("移除分组成功！");
-                $("#groupInfoModal").modal("show");
+                showNotice("移除分组成功！");
             } else if (data[0].DeleteGroup == "-1") {
-                $("#groupAlertInfo").text("禁止移除默认分组！");
-                $("#groupInfoModal").modal("show");
+                showNotice("禁止移除默认分组！");
             } else {
-                $("#groupAlertInfo").text("移除分组失败！");
-                $("#groupInfoModal").modal("show");
+                showNotice("移除分组失败！");
             }
         }
     });

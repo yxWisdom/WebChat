@@ -6,7 +6,7 @@
 
 var chat_contents_height = 20;
 var friendPhoto;
-var currentFriend=null;
+var currentFriend = null;
 
 $(document).ready(function () {
     // $("#ChatContent").empty();
@@ -29,11 +29,11 @@ $(document).ready(function () {
     // json={"name":array};
     // //if("1,2"===array.toString())
     // alert(json.name[0]);
-    
+
 })
 
 function refresh() {
-    if(!currentFriend)
+    if (!currentFriend)
         return;
     var messageList;
     // var sender = $("#div_userinfo").find("label").attr("id")
@@ -45,7 +45,9 @@ function refresh() {
             showMsg(textbox);
         }
     }
-    loadRecentMessageList();
+    if (currentTab == 0) {
+        loadRecentMessageList();
+    }
 }
 
 // function readNotReadFriend() {
@@ -78,7 +80,7 @@ function readNotReadMessage() {
         dataType: "json",
         data: {
             "sender": currentFriend,
-            "receiver":currentUserId
+            "receiver": currentUserId
         },
         success: function (Data) {
             messageList = Data;
@@ -154,7 +156,7 @@ function chatTo(Sid) {
     currentPhoto = data.PHOTO;
     currentFriend = data.ACCOUNTID;
     var msgList = readNotReadMessage();
-    for(var i in msgList) {
+    for (var i in msgList) {
         var textbox = new ChatContent.Text(msgList[i].TEXT, "friend");
         showMsg(textbox);
     }
@@ -254,9 +256,9 @@ var ChatContent = {
         this.init = function () {
             ++ChatContent.counter;
             if (this.speaker === "user") {
-                this.dom = ChatContent.getDivHeadRight() + '<img src="'+ userPhoto +'">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadRight() + '<img src="' + userPhoto + '">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
             } else {
-                this.dom = ChatContent.getDivHeadLeft() + '<img src="'+friendPhoto+'">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadLeft() + '<img src="' + friendPhoto + '">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
             }
         };
 
