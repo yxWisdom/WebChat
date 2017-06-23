@@ -21,21 +21,17 @@ public class EditPasswordServlet extends HttpServlet {
     Account olduser = new Account();
     Account newuser = new Account();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //olduser.setAccountid(request.getParameter("accountid"));
-        //newuser.setAccountid(request.getParameter("accountid"));
-        //olduser.setPassword(request.getParameter("oldpass"));
-        //newuser.setPassword(request.getParameter("newpass"));
-        olduser.setAccountid("1000");
-        newuser.setAccountid("1000");
-        olduser.setPassword("test");
-        newuser.setPassword("newpass");
+        olduser.setAccountid(request.getParameter("accountid"));
+        newuser.setAccountid(request.getParameter("accountid"));
+        olduser.setPassword(request.getParameter("oldpass"));
+        newuser.setPassword(request.getParameter("newpass"));
 
         try{
             out.print("[{\"EditPassword\":\""+ DataInteraction.EditPassword(olduser,newuser)+"\"}]");

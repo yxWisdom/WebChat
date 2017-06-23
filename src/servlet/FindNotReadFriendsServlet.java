@@ -18,7 +18,7 @@ import org.json.JSONException;
  */
 @WebServlet("/FindNotReadFriendsServlet")
 public class FindNotReadFriendsServlet extends HttpServlet {
-    Account user=new Account();
+    private Account user=new Account();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
@@ -27,8 +27,7 @@ public class FindNotReadFriendsServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //user.setAccountid(request.getParameter("accountid"));
-        user.setAccountid("1000");
+        user.setAccountid(request.getParameter("accountid"));
 
         try{
             String findUnreadFriends = DataInteraction.findUnreadFriends(user);

@@ -2,6 +2,7 @@
  * Created by DingYiwei on 2017/6/19.
  */
 var currentUserId;
+var currentTab = -1;
 
 $(function () {
     $("[data-toggle='popover']").popover();
@@ -10,178 +11,138 @@ $(function () {
     currentUserId = $.cookie("accountid");
     loadUserInfo();
     loadRecentMessageList(currentUserId);
+    loadGroups();
 });
 
 function loadUserInfo() {
     $.getJSON("../AccountInfoServlet", {accountid: currentUserId}, function (userInfo) {
         var photo = userInfo[0]["PHOTO"];
         var nickname = userInfo[0]["NICKNAME"];
-        alert(photo);
         $("#photo").find("img").attr("src", photo);
         $("#nickname").find("p").text(nickname);
     })
 }
 
-// MessageList
-// friendId, friendNickname, friendPhoto, lastTime, lastMessage, messageNumber
 function loadRecentMessageList() {
-    /*$.getJSON("MessageListServlet", {uid: userId}, function (messageList) {
-     var messageDiv = $("#messageList");
-     messageDiv.clear();
-     for (var message in messageList) {
-     var lastMessage = message["lastMessage"];
-     if (lastMessage.length > 22) {
-     lastMessage = lastMessage.substr(0, 20) + "...";
-     }
-     var nickname = message["friendNickname"];
-     if (nickname.length > 18) {
-     nickname.length = 18;
-     nickname += message["lastTime"];
-     }
-     messageDiv.append("<li class='list-group-item'>" +
-     "<div class='row'>" +
-     "<div class='col-xs-3'>" +
-     "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 30px; width: 30px;'></div>" +
-     "<div class='col-xs-6'>" + message["friendNickname"] + "<br>" + lastMessage + "</div></div></li>");
-     }
-     });*/
-    var tempMessages = [];
-    var tempMessage1 = {};
-    tempMessage1.friendId = "1233";
-    tempMessage1["friendNickname"] = "abc";
-    tempMessage1["friendPhoto"] = "../img/photo1.jpg";
-    tempMessage1["lastTime"] = "13:00";
-    tempMessage1["lastMessage"] = "hello";
-    tempMessage1.messageNumber = 2;
-    var tempMessage2 = tempMessage1;
-    tempMessages[0] = tempMessage1;
-    tempMessage2.lastMessage = "what does the fox say? dinglinglingling";
-    tempMessages[1] = tempMessage2;
-    var messageDiv = $("#messageList");
-    messageDiv.empty();
-    for (var i = 0; i < tempMessages.length; ++i) {
-        var message = tempMessages[i];
-        var lastMessage = message["lastMessage"];
-        if (lastMessage.length > 24) {
-            lastMessage = lastMessage.substr(0, 22) + "...";
-        }
-        var nickname = message["friendNickname"];
-        nickname += message["lastTime"];
-
-        messageDiv.append("<li id='message" + message.friendId + "' onclick='chatTo(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-2'>" +
-            "<img src='" + message["friendPhoto"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
-            "<div class='col-xs-10'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-10'>" + message.friendNickname +
-            "<div class='col-xs-2 pull-right'>" + message.lastTime +
-            "</div>" +
-            "<div class='row' style='margin-left: 0'>" + lastMessage +
-            "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
-            "</span></div></div></div></li>");
+    if (currentTab == 0) {
+        return;
     }
-}
-
-// FriendList
-// id, nickname, photo, groupName
-// TODO
-function loadFriendList() {
-    $.getJSON("FriendListServlet", {uid: currentUserId}, function (friendList) {
+    currentTab = 0;
+    $.getJSON("../FindNotReadFriendsServlet", {accoutid: currentUserId}, function (messageList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
-        for (var friend in friendList) {
-            messageDiv.append("<li class='list-group-item'>" +
+        for (var i = 0; i < messageList.length; ++i) {
+            var message = messageList[i];
+            var lastMessage = message["TEXT"];
+            if (lastMessage.length > 24) {
+                lastMessage = lastMessage.substr(0, 22) + "...";
+            }
+            var id = message["SENDER"];
+            var nickname = message["NICKNAME"];
+            var time = message["TIME"].substr("xxxx-xx-xx ".length, "xx:xx:xx".length);
+            messageDiv.append("<li id='message" + id + "' onclick='chatTo(this.id)' class='list-group-item' " +
+                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
                 "<div class='row'>" +
-                "<div class='col-xs-3'>" +
-                "<img src='" + friend["photo"] + "' class='img-circle' style='height: 30px; width: 30px'></div>" +
-                "<div class='col-xs-6'>" + friend["nickname"] + "</div></div></li>");
+                "<div class='col-xs-2'>" +
+                "<img src='" + message["PHOTO"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
+                "<div class='col-xs-10'>" +
+                "<div class='row'>" +
+                "<div class='col-xs-10'>" + nickname +
+                "<div class='col-xs-2 pull-right'>" + time +
+                "</div>" +
+                "<div class='row' style='margin-left: 0'>" + lastMessage +
+                "<span class='badge pull-right' style='background: #900000'>" + message.messageNumber +
+                "</span></div></div></div></li>");
+        }
+        if (messageList.length == 0) {
+            messageDiv.append("<li class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>暂无未读消息</li>");
         }
     });
-    var messageDiv = $("#messageList");
-    messageDiv.empty();
-    var tempFriend = {};
-    tempFriend.id = "123132";
-    tempFriend.nickname = "alice";
-    tempFriend.photo = "../img/photo1.jpg";
-    var tempFriends = {};
-    tempFriends["我的好友"] = [];
-    tempFriends["我的好友"][0] = tempFriend;
-    tempFriends["我的好友"][1] = tempFriend;
-    tempFriends["我的好友"][2] = tempFriend;
-    tempFriends["我的好友"][3] = tempFriend;
-    tempFriends["我的好友"][4] = tempFriend;
-    tempFriends["我的好友"][5] = tempFriend;
-    tempFriends["不认识"] = [];
-    tempFriends["不认识"][0] = tempFriend;
-    tempFriends["不认识"][1] = tempFriend;
-    tempFriends["不认识"][2] = tempFriend;
-    tempFriends["同学"] = [];
-    /*for (var friend in friendList) {
-     messageDiv.append("<li class='list-group-item'>" +
-     "<div class='row'>" +
-     "<div class='col-xs-3'>" +
-     "<img src='" + friend["photo"] + "' class='img-circle' style='height: 30px; width: 30px'></div>" +
-     "<div class='col-xs-6'>" + friend["nickname"] + "</div></div></li>");
-     }*/
-    var strToAppend = "";
-    var groupCount = 0;
-    for (var group in tempFriends) {
-        strToAppend += "<div id='group" + groupCount + "' class='panel-group' style='margin: 0;'>" +
-            "<div class='panel panel-default' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
-            "<div class='panel-heading' style='background: transparent; color: white; border: none'>" +
-            "<label data-toggle='collapse' data-parent='#group" + groupCount + "' href='#collapse" + groupCount + "'>" + group + "(" + tempFriends[group].length + ")</label>" +
-            "</div>" +
-            "<div id='collapse" + groupCount + "' class='panel-collapse collapse'>" +
-            "<div class='panel-body' style='padding: 0; border: none;'>" +
-            "<ul class='list-group' style='margin: 0'>";
-        for (var i = 0; i < tempFriends[group].length; ++i) {
-            var friend = tempFriends[group][i];
-            strToAppend += "<li id='friend" + friend.id + "' onclick='chatToFriend(this.id)' class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
-                "<div class='row'>" +
-                "<div class='col-xs-3'>" +
-                "<img src='" + friend.photo + "' class='img-circle' style='height: 30px; width: 30px;'>" +
-                "</div>" +
-                "<div class='col-xs-9'>" + friend.nickname +
-                "</div>" +
-                "</li>";
-        }
-        strToAppend += "</ul>" +
-            "</div></div></div></div>";
-        groupCount++;
+}
+
+function loadFriendList() {
+    if (currentTab == 1) {
+        return;
     }
-    messageDiv.append(strToAppend);
+    currentTab = 1;
+    $.getJSON("../ReadUserFriendsServlet", {accountid: currentUserId}, function (friendList) {
+        var messageDiv = $("#messageList");
+        messageDiv.empty();
+        var strToAppend = "";
+        var groupCount = 0;
+        for (var group in friendList) {
+            strToAppend += "<div id='group" + groupCount + "' class='panel-group' style='margin: 0;'>" +
+                "<div class='panel panel-default' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+                "<div class='panel-heading' style='background: transparent; color: white; border: none'>" +
+                "<label data-toggle='collapse' data-parent='#group" + groupCount + "' href='#collapse" + groupCount + "'>" +
+                group + "(" + friendList[group].length + ")</label>" +
+                "</div>" +
+                "<div id='collapse" + groupCount + "' class='panel-collapse collapse'>" +
+                "<div class='panel-body' style='padding: 0; border: none;'>" +
+                "<ul class='list-group' style='margin: 0'>";
+            for (var i = 0; i < friendList[group].length; ++i) {
+                var friend = friendList[group][i];
+                strToAppend += "<li id='friend" + friend["ACCOUNTID"] + "' " +
+                    "onclick='chatToFriend(this.id)' class='list-group-item' " +
+                    "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>" +
+                    "<div class='row'>" +
+                    "<div class='col-xs-3'>" +
+                    "<img src='" + friend["PHOTO"] + "' class='img-circle' style='height: 30px; width: 30px;'>" +
+                    "</div>" +
+                    "<div class='col-xs-9'>" + friend["NICKNAME"] +
+                    "</div>" +
+                    "</li>";
+            }
+            strToAppend += "</ul>" +
+                "</div></div></div></div>";
+            groupCount++;
+        }
+        messageDiv.append(strToAppend);
+    });
 }
 
 function loadApplyList() {
+    if (currentTab == 2) {
+        return;
+    }
+    currentTab = 2;
     $.getJSON("../ReadUserNewFriendServlet", {accountid: currentUserId}, function (applyList) {
         var messageDiv = $("#messageList");
         messageDiv.empty();
         for (var i = 0; i < applyList.length; ++i) {
             var apply = applyList[i];
-            messageDiv.append("<li id='user" + apply["FRIENDID"] + "' class='list-group-item' " +
-                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555' " +
-                "onclick='agree(this.id)'>" +
+            messageDiv.append("<li class='list-group-item' " +
+                "style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555'>" +
                 "<div class='row'>" +
                 "<div class='col-xs-2'>" +
                 "<img src='" + apply["PHOTO"] + "' class='img-circle' style='height: 40px; width: 40px;'></div>" +
-                "<div class='col-xs-10'>" + apply["NICKNAME"] + "(" + apply["FRIENDID"] + ")<br>请求添加你为好友</div></li>");
+                "<div class='col-xs-8'>" + apply["NICKNAME"] + "(" + apply["FRIENDID"] + ")<br>请求添加你为好友</div>" +
+                "<span id='user" + apply["FRIENDID"] + "' class='glyphicon glyphicon-ok-circle' " +
+                "style='font-size: x-large; color: dodgerblue' onclick='agree(this.id)'></span>" +
+                "<span class='glyphicon glyphicon-remove' style='font-size: x-large; color: #900000'></span>" +
+                "</li>");
+        }
+        if (applyList.length == 0) {
+            messageDiv.append("<li class='list-group-item' style='background: transparent; border: none; border-radius: 0; border-top: 1px solid #555555;'>暂无新的申请</li>");
         }
     });
 }
 
 function agree(applyUserId) {
-    $.getJSON("../AgreeNewFriendServlet", {accountid: currentUserId, friendid: applyUserId.substr("user".length)}, function (agreeInfo) {
-        var noticeBox=$("#notice");
-        var noticeBody=noticeBox.find(".modal-body");
-        if(agreeInfo["ifNew"]==-1) {
+    $.getJSON("../AgreeNewFriendServlet", {
+        accountid: currentUserId,
+        friendid: applyUserId.substr("user".length)
+    }, function (agreeInfo) {
+        var noticeBox = $("#notice");
+        var noticeBody = noticeBox.find(".modal-body");
+        if (agreeInfo["ifNew"] == 1) {
             noticeBody.text("好友添加成功");
-        }else {
+        } else {
             noticeBody.text("好友添加失败");
         }
         noticeBox.modal();
-        $(applyUserId).remove();
-    })
+        loadApplyList();
+    });
 }
 
 function searchUsers() {
@@ -189,7 +150,7 @@ function searchUsers() {
     var searchContent = $("#searchContent").val();
     var sendData = {};
     sendData.accountid = currentUserId;
-    sendData[searchOption] = searchContent
+    sendData[searchOption] = searchContent;
     $.getJSON("../SearchFriendServlet", sendData, function (userList) {
         var list = $("#searchList");
         list.empty();
@@ -208,14 +169,20 @@ function searchUsers() {
                 "<span id='" + spanId + user["ACCOUNTID"] + "' style='color: dodgerblue; font-size: x-large;' " +
                 classAndOnclick + "</span>" + "</div></li>");
         }
+        if (userList.length == 0) {
+            list.append("<li class='list-group-item'>未找到匹配用户</li>");
+        }
     });
 }
 
 function addFriend(friendId) {
     var userId = friendId.substr("friend".length);
-    $.getJSON("../AddFriendServlet", {accountid: currentUserId, friendid: userId}, function () {
+    $.getJSON("../AddFriendServlet", {
+        accountid: currentUserId,
+        friendid: userId
+    }, function () {
         $("#searchUser").modal("hide");
-        var noticeBox=$("#notice");
+        var noticeBox = $("#notice");
         noticeBox.find(".modal-body").text("请求已发送");
         noticeBox.modal();
     });
@@ -238,7 +205,41 @@ function changeSearchOption() {
     }
 }
 
-function changeGroup() {
-    var friendId = $("#div_userinfo").find("label");
-    alert($("#div_userinfo").find("label").attr("id"));
+function loadGroups() {
+    $.getJSON("../ShowAllGroupsServlet", {accountid: currentUserId}, function (groupList) {
+        var groupBox = $("#groupList");
+        for (var i = 0; i < groupList.length; ++i) {
+            var group = groupList[i];
+            groupBox.append("<li id='allgroup" + group["GROUPID"] + "' class='list-group-item' onclick='changeGroupOfFriend(this.id)'>" +
+                group["NAME"] + "</li>");
+        }
+    })
+}
+
+function changeGroupOfFriend(groupId) {
+    groupId = groupId.substr("allgroup".length);
+    var friendId = $("#div_userinfo").find("label").attr("id");
+    $.getJSON("../MoveFriendToGroupServlet", {
+        accountid: currentUserId,
+        friendid: friendId,
+        groupid: groupId
+    }, function () {
+        $("#groupSetting").modal("hide");
+        var noticeBox = $("#notice");
+        noticeBox.find(".modal-body").text("修改成功");
+        noticeBox.modal();
+        loadFriendList();
+    })
+}
+
+function deleteFriend() {
+    var friendId = $("#div_userinfo").find("label").attr("id");
+    $.getJSON("../ConfirmDeleteFriendServlet", {accountid: currentUserId, friendid: friendId}, function () {
+        var noticeBox = $("#notice");
+        noticeBox.find(".modal-body").text("删除成功");
+        noticeBox.modal();
+        if (currentTab == 1) {
+            loadFriendList();
+        }
+    });
 }
