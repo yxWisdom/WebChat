@@ -2,15 +2,15 @@
  * Created by 22150 on 2017/6/21.
  */
 
-var currentUserId = "1021";
-var currentFriend = "1022";
+// var currentUserId = "1021";
+// var currentFriend = "1022";
 
 $(document).ready(function () {
     //showMsgHistory();
     //alert(currentFriend);
     //  alert($("#gender").val());
 
-    loadGroup()
+
 })
 
 
