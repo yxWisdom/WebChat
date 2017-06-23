@@ -8,9 +8,9 @@ var currentFriend = "1022";
 $(document).ready(function () {
     //showMsgHistory();
     //alert(currentFriend);
-   //  alert($("#gender").val());
-    $('#ChangeGroupdModal').modal('show');
-    
+    //  alert($("#gender").val());
+
+    loadGroup()
 })
 
 
@@ -202,4 +202,151 @@ function changePwd() {
             alert("修改失败");
         }
     })
+}
+
+
+function loadGroup()
+{
+    var grouplist;
+    $.ajax({
+        type:"POST",
+        url:"../ShowAllGroupsServlet",
+        async:false,
+        dataType:"json",
+        data: {
+            "accountid": currentUserId
+        },
+        success:function (data) {
+            grouplist = data;
+        }
+    });
+    //grouplist = [{"GROUPID":"1","GROUPNAME":"我的好友"},{"GROUPID":"2","GROUPNAME":"朋友"},{"GROUPID":"3","GROUPNAME":"家人"}]
+    var str = '<li class="list-group-item" style="background: transparent; border: none; border-radius: 0; "> '
+        + '<div class="input-group input-group-md" style="width: 300px">'
+        + '<input type="text" class="form-control"  />'
+        + '<span  class="input-group-addon " onclick="addGroup.call($(this))"><span  class="glyphicon glyphicon-plus" style=""></span></span>'
+        + '</div>'
+        + '</li>';
+    for(var i in grouplist)
+    {
+        str += '<li class="list-group-item" style="background: transparent; border: none; border-radius: 0; ">'
+            + '<div class="input-group input-group-md" style="width: 300px">'
+            + '<input id = "GROUP'+grouplist[i].GROUPID + '" type="text" class="form-control" disabled="true" value="'+ grouplist[i].NAME + '" />'
+            + '<span  class="input-group-addon " style=" " ><span  class="glyphicon glyphicon-minus" onclick="removeGroup.call($(this))"></span></span>'
+            + '<span  class="input-group-addon " style=" "><span  class="glyphicon glyphicon-edit" onclick="editGroup.call($(this))"></span></span>'
+            // '<span  class="input-group-addon " style=" "><span id="user1022" class="glyphicon glyphicon-ok"></span></span>'
+            + '</div>'
+            + '</li>'
+    }
+    $("#editGroupList").empty().append(str);
+    $('#ChangeGroupdModal').modal('show');
+}
+
+function addGroup()
+{
+    var groupName=$(this).prev().val();
+    $.ajax({
+        type:"POST",
+        url:"../AddGroupServlet",
+        async:false,
+        dataType:"json",
+        data: {
+            "accountid":currentUserId,
+            "groupname":groupName
+        },
+        beforeSend:function () {
+            if(!groupName)
+                return false;
+        },
+        success:function (data) {
+            if(data[0].ADDGroup=="1")
+            {
+                $("#groupAlertInfo").text("添加分组成功！");
+                $("#groupInfoModal").modal("show");
+            }else
+            {
+                $("#groupAlertInfo").text("添加分组失败！");
+                $("#groupInfoModal").modal("show");
+            }
+        }
+    });
+    loadGroup();
+}
+
+function removeGroup()
+{
+
+    var groupid = $(this).parent().prev().attr("id");
+    groupid = groupid.substr(5);
+    $.ajax({
+        type:"POST",
+        url:"../DeleteGroupServlet",
+        async:false,
+        dataType:"json",
+        data: {
+            "groupid": groupid,
+            "accountid":currentUserId
+        },
+        beforeSend:function () {;
+        },
+        success:function (data) {
+            if(data[0].DeleteGroup=="1" || data[0].DeleteGroup =="2")
+            {
+                $("#groupAlertInfo").text("移除分组成功！");
+                $("#groupInfoModal").modal("show");
+            }else if(data[0].DeleteGroup== "-1")
+            {
+                $("#groupAlertInfo").text("禁止移除默认分组！");
+                $("#groupInfoModal").modal("show");
+            }else
+            {
+                $("#groupAlertInfo").text("移除分组失败！");
+                $("#groupInfoModal").modal("show");
+            }
+        }
+    });
+    loadGroup();
+}
+
+
+function editGroup()
+{
+    $(this).parent().prev().prev().attr("disabled",false);
+    $(this).attr("class","glyphicon glyphicon-ok").attr("onclick","updateGroup.call($(this))")
+
+}
+
+function updateGroup()
+{
+    //$(this).parents("input").attr("disabled",false);
+   //$(this).attr("class","glyphicon glyphicon-edit").attr("onclick","updateGroup");
+    var groupName =  $(this).parent().prev().prev().val();
+    var groupid =$(this).parent().prev().prev().attr("id");
+    groupid = groupid.substr(5);
+    $.ajax({
+        type:"POST",
+        url:"../EditGroupNameServlet",
+        async:false,
+        dataType:"json",
+        data: {
+            "groupid":  groupid,
+            "groupname":groupName
+        },
+        beforeSend:function () {
+            if(!groupName)
+                return false;
+        },
+        success:function (data) {
+            if(data[0].EditGroupName == "1" )
+            {
+                $("#groupAlertInfo").text("修改分组名成功！");
+                $("#groupInfoModal").modal("show");
+            }else
+            {
+                $("#groupAlertInfo").text("修改分组名失败！");
+                $("#groupInfoModal").modal("show");
+            }
+        }
+    });
+    loadGroup();
 }

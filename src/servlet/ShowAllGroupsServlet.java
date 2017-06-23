@@ -20,7 +20,7 @@ import java.sql.SQLException;
 public class ShowAllGroupsServlet extends HttpServlet {
     Groups group = new Groups();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

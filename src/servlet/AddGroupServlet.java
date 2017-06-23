@@ -20,17 +20,17 @@ import java.sql.SQLException;
 public class AddGroupServlet extends HttpServlet {
     Groups group= new Groups();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //group.setAccountid(request.getParameter("accountid"));
-        //group.setName(request.getParameter("groupname"));
-        group.setAccountid("1000");
-        group.setName("ADD_1");
+        group.setAccountid(request.getParameter("accountid"));
+        group.setName(request.getParameter("groupname"));
+//        group.setAccountid("1000");
+//        group.setName("ADD_1");
 
         try{
             out.print("[{\"ADDGroup\":\""+ DataInteraction.ADDGroup(group)+"\"}]");

@@ -21,17 +21,17 @@ import java.sql.SQLException;
 public class DeleteGroupServlet extends HttpServlet {
     Groups group = new Groups();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //group.setGroupid(request.getParameter("groupid"));
-        //group.setAccountid(request.getParameter("accountid"));
-        group.setGroupid("4");
-        group.setAccountid("1020");
+        group.setGroupid(request.getParameter("groupid"));
+        group.setAccountid(request.getParameter("accountid"));
+//        group.setGroupid("4");
+//        group.setAccountid("1020");
 
         try{
             out.print("[{\"DeleteGroup\":\""+ DataInteraction.DeleteGroup(group)+"\"}]");
