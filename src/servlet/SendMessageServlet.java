@@ -27,12 +27,12 @@ public class SendMessageServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("gb2312");
         PrintWriter out = response.getWriter();
-        //meg.setSender(request.getParameter("sender"));
-        //meg.setReceiver(request.getParameter("receiver"));
-        //meg.setText(request.getParameter("text"));
-        meg.setSender("1020");
-        meg.setReceiver("1000");
-        meg.setText("hello my name is test5");
+        meg.setSender(request.getParameter("sender"));
+        meg.setReceiver(request.getParameter("receiver"));
+        meg.setText(request.getParameter("text"));
+//        meg.setSender("1020");
+//        meg.setReceiver("1000");
+//        meg.setText("hello my name is test5");
 
         try{
             out.print("[{\"SendMessage\":\""+DataInteraction.SendMessage(meg)+"\"}]");
