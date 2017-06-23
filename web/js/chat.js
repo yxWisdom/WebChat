@@ -202,6 +202,7 @@ function changeSearchOption() {
 function loadGroups() {
     $.getJSON("../ShowAllGroupsServlet", {accountid: currentUserId}, function (groupList) {
         var groupBox = $("#groupList");
+        groupBox.empty();
         for (var i = 0; i < groupList.length; ++i) {
             var group = groupList[i];
             groupBox.append("<li id='allgroup" + group["GROUPID"] + "' class='list-group-item' onclick='changeGroupOfFriend(this.id)'>" +
