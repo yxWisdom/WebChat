@@ -5,7 +5,7 @@
 
 
 var chat_contents_height = 20;
-var userPhoto=-1;
+var userPhoto = -1;
 var friendPhoto;
 // var currentFriend;
 
@@ -19,11 +19,11 @@ $(document).ready(function () {
     //chatTo("123");
     //$.cookie("accountid","hah");
     //if(document.getElementById("sendmsg123"))
-        //alert("123");
+    //alert("123");
     //alert(currentUserId);
-   //alert($("#sendmsg"));
-   // alert($("#div_userinfo").find("label").attr("id"));
-   
+    //alert($("#sendmsg"));
+    // alert($("#div_userinfo").find("label").attr("id"));
+
     // array=[];
     // array.push("1");
     // array.push("2");
@@ -36,16 +36,13 @@ $(document).ready(function () {
     })
 })
 
-function refresh()
-{
-    var  messageList;
-    var sender =  $("#div_userinfo").find("label").attr("id")
-    var receiver=currentUserId;
-    messageList=readNotReadMessage(sender,receiver);
-    for(var message in messageList)
-    {
-        if(message.text)
-        {
+function refresh() {
+    var messageList;
+    var sender = $("#div_userinfo").find("label").attr("id")
+    var receiver = currentUserId;
+    messageList = readNotReadMessage(sender, receiver);
+    for (var message in messageList) {
+        if (message.text) {
             var textbox = new ChatContent.Text(text, "friend");
             showMsg(textbox);
         }
@@ -53,21 +50,20 @@ function refresh()
     loadRecentMessageList();
 }
 
-function readNotReadFriend()
-{
-    var friendList=null;
+function readNotReadFriend() {
+    var friendList = null;
     $.ajax({
         type: "POST",
-        url:"",
+        url: "",
         async: false,
         dataType: "json",
         data: {
-            "accountid":currentUserId
+            "accountid": currentUserId
         },
-        success: function(Data) {
-            friendListList=Data;
+        success: function (Data) {
+            friendListList = Data;
         },
-        error: function(e){
+        error: function (e) {
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
@@ -75,44 +71,41 @@ function readNotReadFriend()
 }
 
 
-
-function readNotReadMessage(sender,receiver)
-{
-    var messageList=null;
+function readNotReadMessage(sender, receiver) {
+    var messageList = null;
     $.ajax({
         type: "POST",
         url: ServerUrl,
         async: false,
         dataType: "json",
         data: {
-            "sender":sender,
-            "receiver":receiver
+            "sender": sender,
+            "receiver": receiver
         },
-        success: function(Data) {
-            messageList=Data;
+        success: function (Data) {
+            messageList = Data;
         },
-        error: function(e){
+        error: function (e) {
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
     return messageList;
 }
 
-function readMsgHistory()
-{
-    var msgHistory=null;
+function readMsgHistory() {
+    var msgHistory = null;
     $.ajax({
         type: "POST",
         url: ServerUrl,
         async: false,
         dataType: "json",
         data: {
-            "receiver":receiver
+            "receiver": receiver
         },
-        success: function(Data) {
-            msgHistory=Data;
+        success: function (Data) {
+            msgHistory = Data;
         },
-        error: function(e){
+        error: function (e) {
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
@@ -120,43 +113,43 @@ function readMsgHistory()
 }
 
 
-function chatToFriend(Sid)
-{
+function chatToFriend(Sid) {
+    document.getElementById("chatMask").style.display = "none";
     id = Sid.substr("friend".length);
-    var  data = null ; //{"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
+    var data = null; //{"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
     data = readFriendInfo(id);
     var str;
-    var birthday= data.BIRTHDAY;
-    birthday = birthday.substr(0,10);
-    str = "账号："+data.ACCOUNTID+"<br>"+"昵称："+data.NICKNAME+"<br>"+"性别："+data.GENDER+"<br>"+"生日："+birthday;
+    var birthday = data.BIRTHDAY;
+    birthday = birthday.substr(0, 10);
+    str = "账号：" + data.ACCOUNTID + "<br>" + "昵称：" + data.NICKNAME + "<br>" + "性别：" + data.GENDER + "<br>" + "生日：" + birthday;
     var label = $("#div_userinfo").find("label");
     label.text(data.NICKNAME);
-    label.attr("data-original-title",data.NICKNAME);
-    label.attr("title",data.NICKNAME);
-    label.attr("data-content",str);
-    label.attr("id",data.ACCOUNTID);
+    label.attr("data-original-title", data.NICKNAME);
+    label.attr("title", data.NICKNAME);
+    label.attr("data-content", str);
+    label.attr("id", data.ACCOUNTID);
     currentPhoto = data.PHOTO;
     currentFriend = data.ACCOUNTID;
 }
 
 
 function chatTo(Sid) {
-    id=Sid.substr("message".length);
+    document.getElementById("chatMask").style.display = "none";
+    id = Sid.substr("message".length);
     //var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
-    var data=null;
-    while(!data)
-    {
+    var data = null;
+    while (!data) {
         data = readFriendInfo(id);
     }
     var str;
-    str = "账号："+data.ACCOUNTID+"<br>"+"昵称："+data.NICKNAME+"<br>"+"性别："+data.GENDER+"<br>"+"出生日期："+data.BIRTHDAY;
+    str = "账号：" + data.ACCOUNTID + "<br>" + "昵称：" + data.NICKNAME + "<br>" + "性别：" + data.GENDER + "<br>" + "出生日期：" + data.BIRTHDAY;
     var label = $("#div_userinfo").find("label");
     label.text(data.NICKNAME);
-    label.attr("data-original-title",data.NICKNAME);
-    label.attr("title",data.NICKNAME);
-    label.attr("data-content",str);
-    label.attr("id",data.ACCOUNTID);
-    $("#"+Sid).remove();
+    label.attr("data-original-title", data.NICKNAME);
+    label.attr("title", data.NICKNAME);
+    label.attr("data-content", str);
+    label.attr("id", data.ACCOUNTID);
+    $("#" + Sid).remove();
     currentPhoto = data.photo;
     // var msgList = readNotReadMessage(id,currentUserId);
     // currentFriend = data.accountid;
@@ -166,7 +159,7 @@ function chatTo(Sid) {
     // }
 }
 function readFriendInfo(id) {
-    var retData=null;
+    var retData = null;
     $.ajax({
         type: "POST",
         url: "../AccountInfoServlet",
@@ -175,20 +168,19 @@ function readFriendInfo(id) {
         data: {
             "accountid": id
         },
-        beforeSend : function() {
-            if(!id)
+        beforeSend: function () {
+            if (!id)
                 return false;
         },
-        success: function(Data) {
+        success: function (Data) {
             retData = Data[0];
         },
-        error: function(e){
+        error: function (e) {
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
     return retData;
 }
-
 
 
 // function readMsg() {
@@ -228,8 +220,7 @@ function readFriendInfo(id) {
 // }
 
 
-function sendMsg()
-{
+function sendMsg() {
     $.ajax({
         type: "POST",
         url: ServerUrl,
@@ -237,34 +228,31 @@ function sendMsg()
         dataType: "json",
         data: {
             "sender": $("#accountid").val(),
-            "receiver":$("#password").val(),
-            "text":  $("#message").val()
+            "receiver": $("#password").val(),
+            "text": $("#message").val()
         },
-        beforeSend : function() {
-            if(!data.text)
-            {
+        beforeSend: function () {
+            if (!data.text) {
                 return false;
             }
         },
-        success: function(Data) {
-            if(Data.info == "1")
-            {
-                var textbox = new ChatContent.Text(data.text,"user");
+        success: function (Data) {
+            if (Data.info == "1") {
+                var textbox = new ChatContent.Text(data.text, "user");
                 showMsg(textbox);
                 $("#message").text("");
-            }else
-            {
-               alert("消息发送失败！");
+            } else {
+                alert("消息发送失败！");
             }
         },
-        error: function(e){
+        error: function (e) {
             alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
 }
 
 function showMsg(textBox) {
-    
+
     $("#ChatContentBox").append(textBox.getDom());
     var this_box = $("#ChatContentBox" + String(ChatContent.counter));
     this_box.animate({top: "-20px", opacity: "1"}, 200, $.easeInOutCubic);
@@ -272,38 +260,38 @@ function showMsg(textBox) {
     $("#ChatBox").scrollTop(chat_contents_height);
 }
 
-var ChatContent= {
-    counter : -1,
-    BoxPrefixLeft : '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
-    BoxPrefixRight : '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
-    BoxSuffix : '</p></span></div>',
-    BoxDivHeadLeft : '<div class="ChatContent clearfix" ',
-    BoxDivHeadRight : '<div class="ChatContent clearfix right" ',
-    getDivHeadLeft : function() {
+var ChatContent = {
+    counter: -1,
+    BoxPrefixLeft: '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
+    BoxPrefixRight: '<span class="triangle"></span><span class="contentbox"><p class="txtcontent">',
+    BoxSuffix: '</p></span></div>',
+    BoxDivHeadLeft: '<div class="ChatContent clearfix" ',
+    BoxDivHeadRight: '<div class="ChatContent clearfix right" ',
+    getDivHeadLeft: function () {
         return this.BoxDivHeadLeft + 'id="ChatContentBox' + String(this.counter) + '">';
     },
 
-    getDivHeadRight : function() {
+    getDivHeadRight: function () {
         return this.BoxDivHeadRight + 'id="ChatContentBox' + String(this.counter) + '">';
     },
-    Text : function(_text, _speaker) {
+    Text: function (_text, _speaker) {
         this.text = _text;
         this.speaker = _speaker;
         this.dom = String("");
 
-        this.getDom = function() {
-            if(this.dom === "") {
+        this.getDom = function () {
+            if (this.dom === "") {
                 this.init();
             }
             return this.dom;
         };
 
-        this.init = function() {
+        this.init = function () {
             ++ChatContent.counter;
-            if(this.speaker === "user") {
-                this.dom = ChatContent.getDivHeadRight() + '<img src="../img/randomphoto'+userPhoto+'.JPG">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
-            }else {
-                this.dom = ChatContent.getDivHeadLeft() + '<img src="../img/randomphoto'+friendPhoto+'.JPG">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
+            if (this.speaker === "user") {
+                this.dom = ChatContent.getDivHeadRight() + '<img src="../img/randomphoto' + userPhoto + '.JPG">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
+            } else {
+                this.dom = ChatContent.getDivHeadLeft() + '<img src="../img/randomphoto' + friendPhoto + '.JPG">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
             }
         };
 
