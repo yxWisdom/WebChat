@@ -2,7 +2,7 @@
  * Created by DingYiwei on 2017/6/19.
  */
 var currentUserId;
-var userPhoto;
+var userPhoto=null;
 var currentTab = 0;
 
 $(function () {
@@ -19,7 +19,7 @@ $(function () {
 function loadUserInfo() {
     $.getJSON("../AccountInfoServlet", {accountid: currentUserId}, function (userInfo) {
         var photo = userInfo[0]["PHOTO"];
-        userPhote = photo;
+        userPhoto = photo;
         var nickname = userInfo[0]["NICKNAME"];
         $("#photo").find("img").attr("src", photo);
         $("#nicknameOnTop").find("p").text(nickname);

@@ -87,7 +87,11 @@ function loadInfo() {
     var gender = info.GENDER;
     var birthday = info.BIRTHDAY;
     birthday = birthday.substr(0, 10);
+    var index = 0;
+    if(gender == "女 ")
+        index = 1;
     if (info) {
+        $("#accountid").val(info.ACCOUNTID);
         $("#nickname").val(info.NICKNAME);
         document.getElementById("gender").options[index].selected = true;
         $("#birthday").val(birthday);

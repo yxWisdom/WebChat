@@ -35,7 +35,7 @@ $(document).ready(function () {
 function refresh() {
     if (!currentFriend)
         return;
-    var messageList;
+    var msgList;
     // var sender = $("#div_userinfo").find("label").attr("id")
     // var receiver = currentUserId;
     msgList = readNotReadMessage();
@@ -73,6 +73,7 @@ function refresh() {
 
 function readNotReadMessage() {
     var messageList = null;
+    //alert(currentFriend+" "+currentUserId);
     $.ajax({
         type: "POST",
         url: "../ReadOneNotReadMegServlet",
@@ -129,7 +130,7 @@ function chatToFriend(Sid) {
     label.attr("title", data.NICKNAME);
     label.attr("data-content", str);
     label.attr("id", data.ACCOUNTID);
-    currentPhoto = data.PHOTO;
+    friendPhoto = data.PHOTO;
     currentFriend = data.ACCOUNTID;
 
 }
@@ -153,7 +154,7 @@ function chatTo(Sid) {
     label.attr("data-content", str);
     label.attr("id", data.ACCOUNTID);
     $("#" + Sid).remove();
-    currentPhoto = data.PHOTO;
+    friendPhoto = data.PHOTO;
     currentFriend = data.ACCOUNTID;
     var msgList = readNotReadMessage();
     for (var i in msgList) {
@@ -187,6 +188,7 @@ function readFriendInfo(id) {
 
 
 function sendMsg() {
+   // alert(currentFriend+" "+currentUserId);
     var text = $("#message").val();
     $.ajax({
         type: "POST",
@@ -205,9 +207,9 @@ function sendMsg() {
         },
         success: function (Data) {
             if (Data[0].SendMessage == "1") {
-                var textbox = new ChatContent.Text(data.text, "user");
+                var textbox = new ChatContent.Text(text, "user");
                 showMsg(textbox);
-                $("#message").text("");
+                $("#message").val("");
             } else {
                 alert("消息发送失败！");
             }
