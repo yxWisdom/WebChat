@@ -239,7 +239,7 @@ public class DataInteraction {
         return usernewfriends;
     }
 
-   public static String UnreadFriendsSetToJson(ResultSet rs, String accountid ) throws ClassNotFoundException,  JSONException, java.sql.SQLException
+    public static String UnreadFriendsSetToJson(ResultSet rs, String accountid ) throws ClassNotFoundException,  JSONException, java.sql.SQLException
     {
         // json数组
         JSONArray array = new JSONArray();
@@ -255,7 +255,8 @@ public class DataInteraction {
             Class.forName("oracle.jdbc.OracleDriver");//加载驱动
             Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
             Statement stmt_num = conn.createStatement();//创建statement
-            ResultSet rs_num = stmt_num.executeQuery("SELECT count(*) FROM MESSAGE where receiver =" + accountid +
+            ResultSet rs_num = stmt_num.executeQuery("SELECT count(*) FROM MESSAGE where RECEIVER =" + accountid +
+                    " and SENDER=" + rs.getString("SENDER") +
                     " and read=0 order by time desc");
             if(rs_num.next()) {
                 jsonObj.put("UnreadNum", rs_num.getString("COUNT(*)"));
