@@ -18,7 +18,7 @@ function loadUserInfo() {
         var photo = userInfo[0]["PHOTO"];
         var nickname = userInfo[0]["NICKNAME"];
         $("#photo").find("img").attr("src", photo);
-        $("#nickname").find("p").text(nickname);
+        $("#nicknameOnTop").find("p").text(nickname);
     })
 }
 

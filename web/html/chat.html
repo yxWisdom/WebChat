@@ -12,10 +12,11 @@
     <script src="../js/jquery.cookie.js"></script>
     <script src="../js/chat.js"></script>
     <script src="../js/ChatContent.js"></script>
+    <script src="../js/msghistory.js"></script>
 </head>
 <body style="height: 100%; background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#b8c4cb), to(#d9d9db));">
 <div class="container" style="height: 100%;">
-    <div  style="margin-top:5%;height: 85%; background: transparent; margin-bottom: 0;">
+    <div style="margin-top:5%;height: 85%; background: transparent; margin-bottom: 0;">
         <div class="row" style="height: 100%;">
             <!-- left begin -->
             <div class="col-xs-4"
@@ -24,7 +25,7 @@
                     <div id="photo" class="col-xs-4">
                         <img src="../img/photo1.jpg" class="img-circle" style="height: 70px; width: 70px">
                     </div>
-                    <div id="nickname" class="col-xs-4">
+                    <div id="nicknameOnTop" class="col-xs-4">
                         <p style="padding-top: 20px; margin-left: -20px;">DYW</p>
                     </div>
                     <div id="search" class="col-xs-2" data-toggle="modal" data-target="#searchUser">
@@ -37,10 +38,10 @@
                                   style="padding-top: 20px; padding-bottom: 20px; font-size: x-large;"></span>
                         </div>
                         <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="settings_btn">
-                            <li role="presentation">
+                            <li role="presentation" onclick="loadInfo()">
                                 <a role="menuitem" tabindex="-1" href="#">个人信息</a>
                             </li>
-                            <li role="presentation">
+                            <li role="presentation" onclick="loadChangePwd()">
                                 <a role="menuitem" tabindex="-1" href="#">账户安全</a>
                             </li>
                             <li role="presentation">
@@ -58,7 +59,8 @@
                         <span class="glyphicon glyphicon-comment"></span>
                     </div>
                     <div id="contactIcon" class="col-xs-4"
-                         style="border-left: 1px solid #555555; border-right: 1px solid #555555;" onclick="loadFriendList()">
+                         style="border-left: 1px solid #555555; border-right: 1px solid #555555;"
+                         onclick="loadFriendList()">
                         <span class="glyphicon glyphicon-user"></span>
                     </div>
                     <div id="appliesIcon" class="col-xs-4" onclick="loadApplyList()">
@@ -92,11 +94,12 @@
                                     <li role="presentation" data-toggle="modal" data-target="#groupSetting">
                                         <a role="menuitem" tabindex="-1" href="#">调整分组</a>
                                     </li>
-                                    <li role="presentation">
+                                    <li role="presentation" onclick="askMsgHistroy()">
                                         <a role="menuitem" tabindex="-1" href="#">聊天记录</a>
                                     </li>
                                     <li role="presentation" class="divider"></li>
-                                    <li role="presentation" class="btn-danger" data-toggle="modal" data-target="#noticeDeleteFriend">
+                                    <li role="presentation" class="btn-danger" data-toggle="modal"
+                                        data-target="#noticeDeleteFriend">
                                         <a role="menuitem" tabindex="-1" href="#">删除好友</a>
                                     </li>
                                 </ul>
@@ -105,7 +108,7 @@
                     </tr>
                     <tr style="height: 60%; border-bottom: 1px solid #cccccc;">
                         <td>
-                            <div id="ChatBox" class="ChatBox clearfix" >
+                            <div id="ChatBox" class="ChatBox clearfix">
                                 <div id="ChatContentBox"></div><!--在此插入聊天内容-->
                             </div>
                         </td>
@@ -123,7 +126,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <div id="chatMask" style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: #eeeeee; border-radius: 0 5px 5px 0;">
+                <div id="chatMask"
+                     style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: #eeeeee; border-radius: 0 5px 5px 0;">
                     <p style="padding-top: 300px; text-align: center; color: #cccccc; font-size: xx-large; font-weight: lighter;">
                         Welcome</p>
                 </div>
@@ -141,9 +145,12 @@
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default">搜索</button>
-                            <button id="searchOption" value="findaccountid" onclick="changeSearchOption()" type="button" class="btn btn-default">账号▼</button>
+                            <button id="searchOption" value="findaccountid" onclick="changeSearchOption()" type="button"
+                                    class="btn btn-default">账号▼
+                            </button>
                         </div>
-                        <input id="searchContent" type="text" class="form-control" placeholder="请输入账号" onchange="searchUsers()">
+                        <input id="searchContent" type="text" class="form-control" placeholder="请输入账号"
+                               onchange="searchUsers()">
                     </div>
                 </div>
                 <div class="modal-body">
@@ -166,7 +173,7 @@
                         &times;
                     </button>
                 </div>
-                <div class="modal-body"></div>
+                <div class="modal-body" align="center"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 </div>
@@ -182,7 +189,7 @@
                         &times;
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" align="center">
                     <ul id="groupList" class="list-group"></ul>
                 </div>
                 <div class="modal-footer">
@@ -200,15 +207,125 @@
                         &times;
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" align="center">
                     确定删除好友？
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteFriend()">删除</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteFriend()">删除
+                    </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
+    </div>
+    <!--历史纪录模态框-->
+    <div class="modal fade" id="ChatHistoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="top: 100px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">聊天历史纪录</h4>
+                </div>
+                <div class="modal-body" id="info">
+                    <div class="container">
+                        <div id="msgHistory" style="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="deleteMsg()">删除</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!-- 修改个人资料模态框-->
+    <div class="modal fade" id="ChangeInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="top: 100px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="" align="center">修改个人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div align="center">
+                        <table style="border-collapse: separate;border-spacing: 10px">
+                            <tr>
+                                <td><label class="tableText"><b>昵称</b></label></td>
+                                <td style=" margin-left: 10px;">
+                                    <input id="nickname" type="text" class="form-control tableInput"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="tableText"><b>性别</b></label></td>
+                                <td>
+                                    <select id="gender" name="gender" class="form-control tableInput">
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="tableText"><b>生日</b></label></td>
+                                <td style=" margin-left: 10px;">
+                                    <input type="date" id="birthday" class="form-control tableInput"/>
+                                </td>
+                            </tr>
+                            </trmargin-left>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changeInfo()">修改</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <!--修改登陆密码模态框-->
+    <div class="modal fade" id="ChangePwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="top: 100px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" align="center">修改账号密码</h4>
+                </div>
+                <div class="modal-body">
+                    <div align="center">
+                        <table style="border-collapse: separate;border-spacing: 10px">
+                            <tr>
+                                <td><label class="tableText"><b>原密码</b></label></td>
+                                <td style=" margin-left: 10px;">
+                                    <input id="oldPwd" type="password" class="form-control tableInput"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="tableText"><b>新密码</b></label></td>
+                                <td style=" margin-left: 10px;">
+                                    <input id="newPwd" type="password" class="form-control tableInput"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="tableText"><b>确认新密码</b></label></td>
+                                <td style=" margin-left: 10px;">
+                                    <input id="chkNewPwd" type="password" class="form-control tableInput"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="alert alert-danger" id="changePwdInfo" hidden="hidden" style="width: 55%"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="changePwd()">修改</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <!--<button type="button" class="btn btn-primary">提交更改</button>-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 </div>
 </body>
