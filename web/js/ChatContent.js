@@ -5,9 +5,8 @@
 
 
 var chat_contents_height = 20;
-var userPhoto = -1;
 var friendPhoto;
-// var currentFriend;
+var currentFriend=null;
 
 $(document).ready(function () {
     // $("#ChatContent").empty();
@@ -30,91 +29,91 @@ $(document).ready(function () {
     // json={"name":array};
     // //if("1,2"===array.toString())
     // alert(json.name[0]);
-
-    $("#sendmsg").click(function () {
-        sendMsg();
-    })
+    
 })
 
 function refresh() {
+    if(!currentFriend)
+        return;
     var messageList;
-    var sender = $("#div_userinfo").find("label").attr("id")
-    var receiver = currentUserId;
-    messageList = readNotReadMessage(sender, receiver);
-    for (var message in messageList) {
-        if (message.text) {
-            var textbox = new ChatContent.Text(text, "friend");
+    // var sender = $("#div_userinfo").find("label").attr("id")
+    // var receiver = currentUserId;
+    msgList = readNotReadMessage();
+    for (var i in msgList) {
+        if (msgList[i].TEXT) {
+            var textbox = new ChatContent.Text(msgList[i].TEXT, "friend");
             showMsg(textbox);
         }
     }
     loadRecentMessageList();
 }
 
-function readNotReadFriend() {
-    var friendList = null;
-    $.ajax({
-        type: "POST",
-        url: "",
-        async: false,
-        dataType: "json",
-        data: {
-            "accountid": currentUserId
-        },
-        success: function (Data) {
-            friendListList = Data;
-        },
-        error: function (e) {
-            alert(e.name + ": " + e.message + "\n链接失败");
-        }
-    });
-    return friendList;
-}
+// function readNotReadFriend() {
+//     var friendList = null;
+//     $.ajax({
+//         type: "POST",
+//         url: "",
+//         async: false,
+//         dataType: "json",
+//         data: {
+//             "accountid": currentUserId
+//         },
+//         success: function (Data) {
+//             friendListList = Data;
+//         },
+//         error: function (e) {
+//             alert(e.name + ": " + e.message + "\n链接失败");
+//         }
+//     });
+//     return friendList;
+// }
 
 
-function readNotReadMessage(sender, receiver) {
+function readNotReadMessage() {
     var messageList = null;
     $.ajax({
         type: "POST",
-        url: ServerUrl,
+        url: "../ReadOneNotReadMegServlet",
         async: false,
         dataType: "json",
         data: {
-            "sender": sender,
-            "receiver": receiver
+            "sender": currentFriend,
+            "receiver":currentUserId
         },
         success: function (Data) {
             messageList = Data;
         },
         error: function (e) {
-            alert(e.name + ": " + e.message + "\n链接失败");
+            //alert(e.name + ": " + e.message + "\n链接失败");
         }
     });
     return messageList;
 }
 
-function readMsgHistory() {
-    var msgHistory = null;
-    $.ajax({
-        type: "POST",
-        url: ServerUrl,
-        async: false,
-        dataType: "json",
-        data: {
-            "receiver": receiver
-        },
-        success: function (Data) {
-            msgHistory = Data;
-        },
-        error: function (e) {
-            alert(e.name + ": " + e.message + "\n链接失败");
-        }
-    });
-    return messageList;
-}
+// function readMsgHistory() {
+//     var msgHistory = null;
+//     $.ajax({
+//         type: "POST",
+//         url: ServerUrl,
+//         async: false,
+//         dataType: "json",
+//         data: {
+//             "receiver": receiver
+//         },
+//         success: function (Data) {
+//             msgHistory = Data;
+//         },
+//         error: function (e) {
+//             alert(e.name + ": " + e.message + "\n链接失败");
+//         }
+//     });
+//     return messageList;
+// }
 
 
 function chatToFriend(Sid) {
     document.getElementById("chatMask").style.display = "none";
+    $("#ChatContentBox").empty();
     id = Sid.substr("friend".length);
     var data = null; //{"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
     data = readFriendInfo(id);
@@ -130,12 +129,14 @@ function chatToFriend(Sid) {
     label.attr("id", data.ACCOUNTID);
     currentPhoto = data.PHOTO;
     currentFriend = data.ACCOUNTID;
+
 }
 
 
 function chatTo(Sid) {
     document.getElementById("chatMask").style.display = "none";
     id = Sid.substr("message".length);
+    $("#ChatContentBox").empty();
     //var  data = {"accountid":"1001","nickname":"hello","gender":"男","birthday":"1996-12-05"}//readFriendInfo(id);
     var data = null;
     while (!data) {
@@ -150,13 +151,13 @@ function chatTo(Sid) {
     label.attr("data-content", str);
     label.attr("id", data.ACCOUNTID);
     $("#" + Sid).remove();
-    currentPhoto = data.photo;
-    // var msgList = readNotReadMessage(id,currentUserId);
-    // currentFriend = data.accountid;
-    // for(var msg in msgList) {
-    //     var textbox = new ChatContent.Text(text, "friend");
-    //     showMsg(textbox);
-    // }
+    currentPhoto = data.PHOTO;
+    currentFriend = data.ACCOUNTID;
+    var msgList = readNotReadMessage();
+    for(var i in msgList) {
+        var textbox = new ChatContent.Text(msgList[i].TEXT, "friend");
+        showMsg(textbox);
+    }
 }
 function readFriendInfo(id) {
     var retData = null;
@@ -183,61 +184,25 @@ function readFriendInfo(id) {
 }
 
 
-// function readMsg() {
-//     $.ajax({
-//         type: "POST",
-//         async: false,
-//         url: ServerUrl,
-//         dataType: "json",
-//         data: {
-//             "sender": $("#accountid").val(),
-//             "receiver":$("#password").val(),
-//             "text":  $("#message").val()
-//         },
-//         beforeSend : function() {
-//             if(!data.text)
-//             {
-//                 return false;
-//             }
-//         },
-//         complete: function() {
-//         },
-//         success: function(Data) {
-//             if(Data.info == "1")
-//             {
-//                 var textbox = new ChatContent.Text(data.text,"user");
-//                 showMsg(textbox);
-//                 $("#message").text("");
-//             }else
-//             {
-//                 alert("消息发送失败！");
-//             }
-//         },
-//         error: function(e){
-//             alert(e.name + ": " + e.message + "\n链接失败");
-//         }
-//     });
-// }
-
-
 function sendMsg() {
+    var text = $("#message").val();
     $.ajax({
         type: "POST",
-        url: ServerUrl,
+        url: "../SendMessageServlet",
         async: false,
         dataType: "json",
         data: {
-            "sender": $("#accountid").val(),
-            "receiver": $("#password").val(),
-            "text": $("#message").val()
+            "sender": currentUserId,
+            "receiver": currentFriend,
+            "text": text
         },
         beforeSend: function () {
-            if (!data.text) {
+            if (!text) {
                 return false;
             }
         },
         success: function (Data) {
-            if (Data.info == "1") {
+            if (Data[0].SendMessage == "1") {
                 var textbox = new ChatContent.Text(data.text, "user");
                 showMsg(textbox);
                 $("#message").text("");
@@ -289,9 +254,9 @@ var ChatContent = {
         this.init = function () {
             ++ChatContent.counter;
             if (this.speaker === "user") {
-                this.dom = ChatContent.getDivHeadRight() + '<img src="../img/randomphoto' + userPhoto + '.JPG">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadRight() + '<img src="'+ userPhoto +'">' + ChatContent.BoxPrefixRight + this.text + ChatContent.BoxSuffix;
             } else {
-                this.dom = ChatContent.getDivHeadLeft() + '<img src="../img/randomphoto' + friendPhoto + '.JPG">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
+                this.dom = ChatContent.getDivHeadLeft() + '<img src="'+friendPhoto+'">' + ChatContent.BoxPrefixLeft + this.text + ChatContent.BoxSuffix;
             }
         };
 
