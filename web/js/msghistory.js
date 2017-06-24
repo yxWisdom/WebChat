@@ -117,7 +117,7 @@ function changeInfo() {
             showNotice("修改失败");
         }
     });
-    loadInfo();
+    loadUserInfo();
 }
 
 function loadChangePwd() {
