@@ -566,7 +566,7 @@ public class DataInteraction {
         Class.forName("oracle.jdbc.OracleDriver");
         Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPWD);
         String selectString = "Select * From MESSAGE where (sender = '"+accountid+"' and receiver = '"+friendid
-                +"'and (read = '1' or read = '3' ) ) or (sender = '"+friendid+"' and receiver = '"+accountid+"'and (read = '1' or read = '2'))";
+                +"'and (read = '1' or read = '3' ) ) or (sender = '"+friendid+"' and receiver = '"+accountid+"'and (read = '1' or read = '2'))  ORDER BY TIME ";
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(selectString);
         String jsonString = resultSetToJson(rs);
