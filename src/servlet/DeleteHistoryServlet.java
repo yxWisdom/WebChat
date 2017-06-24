@@ -21,7 +21,7 @@ public class DeleteHistoryServlet extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         //实际代码
         String   accountid = request.getParameter("accountid");
-        String[] messageid = request.getParameterValues("messageid");
+        String[] messageid = request.getParameterValues("messageid[]");
         //实际代码
         //测试
         //String   accountid = "1027";

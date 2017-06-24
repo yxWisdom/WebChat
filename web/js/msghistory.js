@@ -15,12 +15,11 @@ function showMsgHistory(msgList) {
     $("#msgHistory").append(str);
 }
 
-
 function selectAllOrNot() {
     if ($("#isSelectALL").prop("checked"))
-        $("[name=checkItem]:checkbox").attr("checked", true);
+        $("[name=checkItem]:checkbox").prop("checked", true);
     else
-        $("[name=checkItem]:checkbox").attr("checked", false);
+        $("[name=checkItem]:checkbox").prop("checked", false);
 }
 
 
@@ -230,17 +229,17 @@ function addGroup() {
         },
         success: function (data) {
             if (data[0].ADDGroup == "1") {
-                showNotice("添加分组成功！");
             } else {
                 showNotice("添加分组失败！");
             }
         }
     });
     loadGroup();
+    loadGroups();
+    loadFriendList();
 }
 
 function removeGroup() {
-
     var groupid = $(this).parent().prev().attr("id");
     groupid = groupid.substr(5);
     $.ajax({
@@ -256,7 +255,6 @@ function removeGroup() {
         },
         success: function (data) {
             if (data[0].DeleteGroup == "1" || data[0].DeleteGroup == "2") {
-                showNotice("移除分组成功！");
             } else if (data[0].DeleteGroup == "-1") {
                 showNotice("禁止移除默认分组！");
             } else {
@@ -265,6 +263,8 @@ function removeGroup() {
         }
     });
     loadGroup();
+    loadGroups();
+    loadFriendList();
 }
 
 
@@ -291,15 +291,13 @@ function updateGroup() {
                 return false;
         },
         success: function (data) {
-            // TODO
             if (data[0].EditGroupName == "1") {
-                $("#groupAlertInfo").text("修改分组名成功！");
-                $("#groupInfoModal").modal("show");
             } else {
-                $("#groupAlertInfo").text("修改分组名失败！");
-                $("#groupInfoModal").modal("show");
+                showNotice("修改分组名失败！");
             }
         }
     });
     loadGroup();
+    loadGroups();
+    loadFriendList();
 }
